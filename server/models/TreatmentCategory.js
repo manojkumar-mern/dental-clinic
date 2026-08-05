@@ -1,0 +1,35 @@
+const mongoose = require("mongoose");
+
+const treatmentCategorySchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, "Category name is required"],
+      unique: true,
+      trim: true,
+    },
+    description: {
+      type: String,
+      trim: true,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+// Mongoose query middleware to filter out soft-deleted documents
+treatmentCategorySchema.pre(/^find/, function (next) {
+  this.where({ isDeleted: { $ne: true } });
+  next();
+});
+
+module.exports = mongoose.model("TreatmentCategory", treatmentCategorySchema);

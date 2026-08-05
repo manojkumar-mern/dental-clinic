@@ -119,8 +119,8 @@ export default function TreatmentDetailPage() {
             {data.whyBestPoints.map((point, idx) => (
               <Card key={idx} className="p-5 border border-slate-100 bg-white rounded-xl shadow-soft flex flex-col items-start hover:border-primary/20 hover:shadow-medium transition-all duration-300">
                 <CheckCircle2 className="size-5 text-primary mb-3 shrink-0" />
-                <h3 className="font-heading font-semibold text-sm text-slate-800 leading-snug mb-1.5">{point.title}</h3>
-                <p className="text-[11px] text-slate-500 font-light leading-relaxed">{point.desc}</p>
+                <h3 className="font-heading font-semibold text-base text-slate-800 leading-snug mb-1.5">{point.title}</h3>
+                <p className="text-xs md:text-sm text-slate-500 font-light leading-relaxed">{point.desc}</p>
               </Card>
             ))}
           </div>
@@ -138,11 +138,11 @@ export default function TreatmentDetailPage() {
             {data.solutions.map((sol, idx) => (
               <Card key={idx} className="p-5 border border-slate-100 bg-white rounded-xl shadow-soft hover:shadow-medium hover:border-primary/20 transition-all duration-300 flex flex-col justify-between h-44">
                 <div className="flex justify-between items-start w-full">
-                  <span className="text-[11px] font-bold text-primary bg-light-green/60 px-2 py-0.5 rounded-full">{sol.id}</span>
+                  <span className="text-xs font-bold text-primary bg-light-green/60 px-2 py-0.5 rounded-full">{sol.id}</span>
                 </div>
                 <div className="mt-4">
-                  <h4 className="font-heading font-semibold text-xs text-slate-800 leading-snug">{sol.title}</h4>
-                  <p className="text-[10px] text-slate-500 font-light mt-1 leading-relaxed">{sol.desc}</p>
+                  <h4 className="font-heading font-semibold text-sm md:text-base text-slate-800 leading-snug">{sol.title}</h4>
+                  <p className="text-xs md:text-sm text-slate-500 font-light mt-1 leading-relaxed">{sol.desc}</p>
                 </div>
               </Card>
             ))}
@@ -160,11 +160,11 @@ export default function TreatmentDetailPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative">
             {data.steps.map((step, idx) => (
               <Card key={idx} className="p-5 border border-slate-100 bg-white rounded-xl shadow-soft flex flex-col items-start hover:border-primary/20 hover:shadow-medium transition-all duration-300">
-                <div className="size-6 rounded-full bg-primary flex items-center justify-center text-white text-[10px] font-bold mb-3">
+                <div className="size-6 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold mb-3">
                   {step.id}
                 </div>
-                <h4 className="font-heading font-semibold text-xs text-slate-800 leading-snug mb-1">{step.name}</h4>
-                <p className="text-[10px] text-slate-500 font-light leading-relaxed">{step.desc}</p>
+                <h4 className="font-heading font-semibold text-sm md:text-base text-slate-800 leading-snug mb-1">{step.name}</h4>
+                <p className="text-xs md:text-sm text-slate-500 font-light leading-relaxed">{step.desc}</p>
               </Card>
             ))}
           </div>
@@ -185,8 +185,8 @@ export default function TreatmentDetailPage() {
                   ✓
                 </div>
                 <div>
-                  <h4 className="font-heading font-semibold text-xs text-slate-800 leading-snug">{p.title}</h4>
-                  <p className="text-[10px] text-slate-500 font-light mt-0.5 leading-relaxed">{p.desc}</p>
+                  <h4 className="font-heading font-semibold text-sm md:text-base text-slate-800 leading-snug">{p.title}</h4>
+                  <p className="text-xs md:text-sm text-slate-500 font-light mt-0.5 leading-relaxed">{p.desc}</p>
                 </div>
               </Card>
             ))}

@@ -29,7 +29,9 @@ import {
   User,
   HeartPulse,
   ChevronRight,
+  Compass,
 } from "lucide-react";
+import * as LucideIcons from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
@@ -49,6 +51,53 @@ export default function Home() {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Booking form states
+  const [bookName, setBookName] = useState("");
+  const [bookPhone, setBookPhone] = useState("");
+  const [bookEmail, setBookEmail] = useState("");
+  const [bookServiceId, setBookServiceId] = useState("");
+  const [bookDate, setBookDate] = useState("");
+  const [bookTime, setBookTime] = useState("");
+  const [bookReason, setBookReason] = useState("");
+  const [bookingError, setBookingError] = useState("");
+
+  // Separate list of services fetched from DB for the booking dropdown (needs real MongoDB _id)
+  const [bookingServices, setBookingServices] = useState([]);
+  const [servicesLoading, setServicesLoading] = useState(true);
+
+  const [settings, setSettings] = useState(null);
+
+  // Form toggling tab
+  const [formTab, setFormTab] = useState("appointment"); // "appointment" or "contact"
+
+  // Contact form states
+  const [contactName, setContactName] = useState("");
+  const [contactPhone, setContactPhone] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [contactSubject, setContactSubject] = useState("");
+  const [contactMessage, setContactMessage] = useState("");
+  const [contactSubmitted, setContactSubmitted] = useState(false);
+  const [contactSubmitting, setContactSubmitting] = useState(false);
+  const [contactError, setContactError] = useState("");
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/content/settings");
+        const data = await res.json();
+        if (res.ok && data.success) {
+          setSettings(data.data);
+          if (data.data.seoTitle) {
+            document.title = data.data.seoTitle;
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load page settings:", err);
+      }
+    };
+    fetchSettings();
+  }, []);
+
   useEffect(() => {
     const ctx = gsap.context(() => {
       // Subtle entrance
@@ -63,78 +112,281 @@ export default function Home() {
     return () => ctx.revert();
   }, []);
 
+  // Handle smooth scroll for anchor links and initial hash load
+  useEffect(() => {
+    const handleAnchorClick = (e) => {
+      const link = e.target.closest("a");
+      if (!link) return;
+      const href = link.getAttribute("href");
+      if (!href) return;
+      
+      const hashIndex = href.indexOf("#");
+      if (hashIndex === -1) return;
+      
+      const path = href.substring(0, hashIndex);
+      const hash = href.substring(hashIndex + 1);
+      
+      // If it's a same-page anchor link
+      if (path === "" || path === "/" || path === window.location.pathname) {
+        const target = document.getElementById(hash);
+        if (target) {
+          e.preventDefault();
+          const headerHeight = 64; // h-16
+          const extraSpacing = 16;
+          const targetPosition = target.getBoundingClientRect().top + window.scrollY;
+          const offsetPosition = targetPosition - headerHeight - extraSpacing;
+          
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth",
+          });
+          
+          window.history.pushState(null, "", `#${hash}`);
+        }
+      }
+    };
+
+    const handleInitialHash = () => {
+      const hash = window.location.hash.substring(1);
+      if (hash) {
+        const target = document.getElementById(hash);
+        if (target) {
+          setTimeout(() => {
+            const headerHeight = 64;
+            const extraSpacing = 16;
+            const targetPosition = target.getBoundingClientRect().top + window.scrollY;
+            const offsetPosition = targetPosition - headerHeight - extraSpacing;
+            
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: "smooth",
+            });
+          }, 500); // Small timeout to ensure GSAP and layout are ready
+        }
+      }
+    };
+
+    document.addEventListener("click", handleAnchorClick);
+    
+    if (document.readyState === "complete") {
+      handleInitialHash();
+    } else {
+      window.addEventListener("load", handleInitialHash);
+    }
+
+    return () => {
+      document.removeEventListener("click", handleAnchorClick);
+      window.removeEventListener("load", handleInitialHash);
+    };
+  }, []);
+
+  const servicesSectionRef = useRef(null);
+  const servicesStickyRef = useRef(null);
+  const servicesScrollRef = useRef(null);
+
+  useEffect(() => {
+    // Disable smooth scrolling on HTML element while homepage is loaded to prevent GSAP jumping
+    const html = document.documentElement;
+    const prevScrollBehavior = html.style.scrollBehavior;
+    html.style.scrollBehavior = "auto";
+
+    const isDesktop = window.matchMedia("(min-width: 1024px)").matches;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (!isDesktop || prefersReducedMotion) {
+      return () => {
+        html.style.scrollBehavior = prevScrollBehavior;
+      };
+    }
+
+    const section = servicesSectionRef.current;
+    const stickyWrapper = servicesStickyRef.current;
+    const scrollContainer = servicesScrollRef.current;
+
+    if (!section || !stickyWrapper || !scrollContainer) {
+      return () => {
+        html.style.scrollBehavior = prevScrollBehavior;
+      };
+    }
+
+    const scrollWidth = scrollContainer.scrollWidth;
+    const viewportWidth = window.innerWidth;
+    const amountToScroll = scrollWidth - viewportWidth;
+
+    let ctx;
+    if (amountToScroll > 0) {
+      ctx = gsap.context(() => {
+        // Pin the section container and translate the cards row horizontally
+        gsap.to(scrollContainer, {
+          x: -amountToScroll,
+          ease: "none",
+          scrollTrigger: {
+            trigger: section,
+            pin: true,
+            scrub: 1.8,
+            start: "top top",
+            end: () => `+=${amountToScroll * 1.6}`,
+            invalidateOnRefresh: true,
+          },
+        });
+
+        // Simple slide up entrance for cards (content stays visible if animation never plays)
+        gsap.from(".service-card-anim", {
+          y: 30,
+          opacity: 0.01,
+          stagger: 0.05,
+          duration: 0.4,
+          ease: "power2.out",
+          immediateRender: false,
+          scrollTrigger: {
+            trigger: section,
+            start: "top 75%",
+            toggleActions: "play none none reverse",
+          }
+        });
+      }, section);
+    }
+
+    return () => {
+      html.style.scrollBehavior = prevScrollBehavior;
+      if (ctx) ctx.revert();
+    };
+  }, []);
+
+  const [servicesList, setServicesList] = useState([
+    {
+      title: "Preventative Care",
+      desc: "Comprehensive cleanings, digital diagnostics, and custom cavity prevention maps.",
+      img: "/images/teeth_whitening.png",
+      icon: ShieldCheck,
+      href: "/treatments/routine-check-up",
+    },
+    {
+      title: "Dental Implants",
+      desc: "Permanent titanium restorations matching natural bone structures with CAD-mapped precision.",
+      img: "/images/implant_graphic.png",
+      icon: Heart,
+      href: "/treatments/dental-implants",
+    },
+    {
+      title: "Clear Aligners",
+      desc: "Virtually invisible, comfortable teeth alignment maps utilizing certified Invisalign pathways.",
+      img: "/images/clear_aligners.png",
+      icon: Compass,
+      href: "/treatments/clear-aligners",
+    },
+    {
+      title: "Cosmetic Makeovers",
+      desc: "Enhance your confidence with porcelain veneers and premium composite bonding treatments.",
+      img: "/images/patient_smile.png",
+      icon: Sparkles,
+      href: "/treatments/smile-makeovers",
+    },
+    {
+      title: "Root Canal Treatment",
+      desc: "Painless microscopic nerve-saving therapies that relieve toothache and preserve natural roots.",
+      img: "/images/tooth_pain.png",
+      icon: Activity,
+      href: "/treatments/root-canal-treatment",
+    },
+    {
+      title: "Pediatric Dentistry",
+      desc: "Gentle, comfort-first dental checkups and protective sealant therapies designed for kids.",
+      img: "/images/kids_dental.png",
+      icon: Smile,
+      href: "/treatments/pediatric-dentistry",
+    },
+    {
+      title: "Emergency Relief",
+      desc: "Immediate same-day booking response for unexpected pain, dental damage, or toothaches.",
+      img: "/images/emergency_dental.png",
+      icon: AlertTriangle,
+      href: "#book",
+    },
+    {
+      title: "Laser-Dentistry",
+      desc: "Suture-free, drill-free soft tissue therapies for gum reshaping and quick, gentle healing.",
+      img: "/images/tooth_hologram.png",
+      icon: Shield,
+      href: "/treatments/laser-dentistry",
+    },
+  ]);
+
+  useEffect(() => {
+    const fetchActiveServices = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/services?status=Active");
+        const data = await response.json();
+        if (response.ok && data.success && data.services && data.services.length > 0) {
+          const mapped = data.services.map((service) => ({
+            id: service._id,
+            title: service.title,
+            desc: service.shortDescription,
+            img: service.image || "/images/teeth_whitening.png",
+            icon: service.icon || "Stethoscope",
+            href: `/treatments/${service.slug}`,
+          }));
+          setServicesList(mapped);
+          // Populate the booking dropdown separately with only DB services (real ObjectIds)
+          setBookingServices(mapped);
+        }
+      } catch (err) {
+        console.error("Failed to load dynamic active services:", err);
+      } finally {
+        setServicesLoading(false);
+      }
+    };
+    fetchActiveServices();
+  }, []);
+
   const assistCards = [
     {
       title: "Book Appointment",
       desc: "Select your preferred time slot",
-      href: "#book",
       img: "/images/book_appointment.png",
       borderColor: "hover:border-blue-500",
-      badgeColor: "bg-blue-600 text-white",
-      overlayColor: "from-blue-950/80 via-blue-900/40 to-transparent",
     },
     {
       title: "Dental Implants",
       desc: "Permanent titanium restorations",
-      href: "#treatments",
       img: "/images/implant_graphic.png",
       borderColor: "hover:border-emerald-500",
-      badgeColor: "bg-emerald-600 text-white",
-      overlayColor: "from-emerald-950/80 via-emerald-900/40 to-transparent",
     },
     {
       title: "Tooth Cleaning & Whitening",
       desc: "Brighten your natural smile",
-      href: "#treatments",
       img: "/images/teeth_whitening.png",
       borderColor: "hover:border-pink-500",
-      badgeColor: "bg-pink-600 text-white",
-      overlayColor: "from-pink-950/80 via-pink-900/40 to-transparent",
     },
     {
       title: "Tooth Pain / Sensitivity",
       desc: "Immediate clinical diagnosis",
-      href: "#book",
       img: "/images/tooth_pain.png",
       borderColor: "hover:border-amber-500",
-      badgeColor: "bg-amber-600 text-white",
-      overlayColor: "from-amber-950/80 via-amber-900/40 to-transparent",
     },
     {
       title: "Clear Aligners",
       desc: "Virtually invisible straightening",
-      href: "#treatments",
       img: "/images/clear_aligners.png",
       borderColor: "hover:border-purple-500",
-      badgeColor: "bg-purple-600 text-white",
-      overlayColor: "from-purple-950/80 via-purple-900/40 to-transparent",
     },
     {
       title: "Kid's Dental Care",
       desc: "Comforting pediatric visits",
-      href: "#treatments",
       img: "/images/kids_dental.png",
       borderColor: "hover:border-teal-500",
-      badgeColor: "bg-teal-600 text-white",
-      overlayColor: "from-teal-950/80 via-teal-900/40 to-transparent",
     },
     {
       title: "Emergency Dental Care",
       desc: "Urgent slot accommodations",
-      href: "#book",
       img: "/images/emergency_dental.png",
       borderColor: "hover:border-red-500",
-      badgeColor: "bg-red-600 text-white",
-      overlayColor: "from-red-950/80 via-red-900/40 to-transparent",
     },
     {
       title: "Patient FAQs",
       desc: "Quick treatment guidelines",
-      href: "#patient-care",
       img: "/images/patient_faqs.png",
       borderColor: "hover:border-slate-500",
-      badgeColor: "bg-slate-700 text-white",
-      overlayColor: "from-slate-950/80 via-slate-900/40 to-transparent",
     },
   ];
 
@@ -146,7 +398,7 @@ export default function Home() {
     },
     {
       title: "Emergency Care",
-      desc: "We prioritize patient relief. Aura Dental reserves daily emergency blocks to address sudden dental tooth pains or structural damages immediately.",
+      desc: `We prioritize patient relief. ${settings?.clinicName || "Aura Dental"} reserves daily emergency blocks to address sudden dental tooth pains or structural damages immediately.`,
       points: ["Same-Day Emergency Blocks", "Direct Phone Coordination", "Instant Pain-Management Checks"],
     },
     {
@@ -202,19 +454,78 @@ export default function Home() {
     },
   ];
 
-  const handleBook = (e) => {
+  const handleBook = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    setBookingError("");
+
+    try {
+      const response = await fetch("http://localhost:5000/api/appointments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: bookName,
+          phone: bookPhone,
+          email: bookEmail || undefined,
+          service: bookServiceId,
+          preferredDate: bookDate,
+          preferredTime: bookTime,
+          reasonForVisit: bookReason || undefined,
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to submit appointment request.");
+      }
+
       setFormSubmitted(true);
-    }, 1200);
+    } catch (err) {
+      setBookingError(err.message || "Something went wrong.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleContactSubmit = async (e) => {
+    e.preventDefault();
+    setContactSubmitting(true);
+    setContactError("");
+
+    try {
+      const response = await fetch("http://localhost:5000/api/contact-messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: contactName,
+          phone: contactPhone || undefined,
+          email: contactEmail,
+          subject: contactSubject || undefined,
+          message: contactMessage,
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to send message.");
+      }
+
+      setContactSubmitted(true);
+    } catch (err) {
+      setContactError(err.message || "Something went wrong.");
+    } finally {
+      setContactSubmitting(false);
+    }
   };
 
   return (
     <div ref={containerRef} className="w-full bg-background text-[#1E293B] bg-dot-pattern">
       {/* 1. HERO SECTION */}
-      <Section id="home" size="md" className="pt-20 pb-10 bg-white bg-grid-pattern border-b border-border/40">
+      <Section id="home" size="md" className="pt-12 pb-10 bg-white bg-grid-pattern border-b border-border/40">
         <Container>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             {/* Left */}
@@ -223,10 +534,10 @@ export default function Home() {
                 ★ Board Certified Dental Care
               </span>
               <h1 className="hero-anim text-4xl sm:text-5xl md:text-6xl font-heading font-semibold text-foreground tracking-tight leading-[1.1] max-w-xl">
-                Healthy Smiles <span className="text-primary">Start Early</span>!
+                Elevate Your Smile, <span className="text-primary">Empower Your Health</span>
               </h1>
               <p className="hero-anim mt-4 text-sm sm:text-base text-muted-foreground font-light max-w-md leading-relaxed">
-                Experience specialized, gentle dental care designed for your entire family. We preserve your natural smile using conservative dentistry techniques.
+                Experience premium, customized dental care designed around clinical precision. We safeguard your natural teeth using advanced non-invasive mapping protocols.
               </p>
               
               <div className="hero-anim mt-6 flex flex-wrap gap-3 items-center text-xs text-muted-foreground font-medium">
@@ -239,9 +550,9 @@ export default function Home() {
                 <a href="#book" className={cn(buttonVariants({ size: "lg" }), "bg-[#84cc16] hover:bg-[#65a30d] text-white font-semibold rounded-lg shadow-sm")}>
                   Book Consultation
                 </a>
-                <a href="tel:+15550192834" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "border-border text-foreground hover:bg-alt-background rounded-lg flex items-center justify-center gap-2")}>
+                <a href={`tel:${settings?.phone ? settings.phone.replace(/[^+\d]/g, "") : "+15550192834"}`} className={cn(buttonVariants({ variant: "outline", size: "lg" }), "border-border text-foreground hover:bg-alt-background rounded-lg flex items-center justify-center gap-2")}>
                   <Phone className="size-4 text-primary" />
-                  <span>Call (555) 019-2834</span>
+                  <span>Call {settings?.phone || "(555) 019-2834"}</span>
                 </a>
               </div>
             </div>
@@ -261,15 +572,23 @@ export default function Home() {
       </Section>
 
       {/* 2. TRUST BAR */}
-      <div className="py-4 border-b border-border/40 bg-alt-background relative z-10 text-xs font-semibold text-muted-foreground">
-        <Container>
-          <div className="flex flex-wrap justify-center sm:justify-between items-center gap-4 text-center">
-            <span>✓ Same-day emergency booking response</span>
-            <span>✓ Insurance verified on arrival</span>
-            <span>✓ Low-radiation digital imaging mapping</span>
-            <span>✓ Valid Clinical Accreditation 2026</span>
+      <div className="py-4 border-b border-border/40 bg-alt-background relative z-10 text-xs font-semibold text-muted-foreground overflow-hidden">
+        <div className="w-full">
+          <div className="animate-marquee flex gap-12 py-1 items-center">
+            <div className="flex shrink-0 gap-12 min-w-full justify-around">
+              <span>✓ Same-day emergency booking response</span>
+              <span>✓ Insurance verified on arrival</span>
+              <span>✓ Low-radiation digital imaging mapping</span>
+              <span>✓ Valid Clinical Accreditation 2026</span>
+            </div>
+            <div className="flex shrink-0 gap-12 min-w-full justify-around" aria-hidden="true">
+              <span>✓ Same-day emergency booking response</span>
+              <span>✓ Insurance verified on arrival</span>
+              <span>✓ Low-radiation digital imaging mapping</span>
+              <span>✓ Valid Clinical Accreditation 2026</span>
+            </div>
           </div>
-        </Container>
+        </div>
       </div>
 
       {/* 3. ASSIST PORTAL: HOW MAY WE ASSIST YOU TODAY? (COLORFUL, LARGE PHOTO CARDS) */}
@@ -277,41 +596,33 @@ export default function Home() {
         <Container>
           <div className="text-center max-w-lg mx-auto mb-8">
             <h2 className="text-2xl font-heading font-semibold text-foreground tracking-tight">How may we assist you today?</h2>
-            <p className="text-xs text-muted-foreground font-light mt-1">Select an action block below to open clinical pathways instantly.</p>
+            <p className="text-sm text-muted-foreground font-light mt-1.5">Explore the care pathways available at {settings?.clinicName || "Aura Dental"}.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {assistCards.map((card, idx) => (
-              <a
+              <div
                 key={idx}
-                href={card.href}
                 className={cn(
                   "relative h-60 rounded-2xl overflow-hidden border border-border/60 flex flex-col justify-end text-left shadow-soft hover:shadow-premium transition-all duration-300 group hover:-translate-y-1",
                   card.borderColor
                 )}
               >
                 {/* Background Image */}
-                <div className="absolute inset-0 z-0">
+                <div className="absolute inset-0">
                   <img
                     src={card.img}
                     alt={card.title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  {/* Visual Overlay */}
-                  <div className={cn("absolute inset-0 bg-gradient-to-t", card.overlayColor)} />
                 </div>
 
                 {/* Content Overlay */}
-                <div className="relative z-10 p-5 text-white flex flex-col items-start gap-1">
-                  <h3 className="font-heading font-semibold text-sm leading-snug group-hover:text-primary-hover transition-colors mt-2">{card.title}</h3>
-                  <p className="text-[10px] text-white/80 font-light leading-tight">{card.desc}</p>
-                  
-                  <div className="mt-3 flex items-center gap-1 text-[10px] font-semibold text-white/90 group-hover:text-white transition-colors">
-                    <span>GET STARTED</span>
-                    <ChevronRight className="size-3 transition-transform group-hover:translate-x-0.5" />
-                  </div>
+                <div className="relative z-10 p-5 flex flex-col items-start gap-1">
+                  <h3 className="font-heading font-semibold text-base leading-snug text-slate-800 group-hover:text-primary transition-colors mt-2">{card.title}</h3>
+                  <p className="text-xs text-slate-500 font-light leading-tight">{card.desc}</p>
                 </div>
-              </a>
+              </div>
             ))}
           </div>
         </Container>
@@ -325,15 +636,15 @@ export default function Home() {
             <div className="lg:col-span-5 relative w-full aspect-[4/4] rounded-2xl overflow-hidden border border-border shadow-soft bg-muted group">
               <img
                 src="/images/hero_clinic.png"
-                alt="Why Trust Aura Dental"
+                alt={`Why Trust ${settings?.clinicName || "Aura Dental"}`}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-102"
               />
             </div>
 
             {/* Right Tabs */}
             <div className="lg:col-span-7 flex flex-col items-start">
-              <span className="text-[10px] font-bold tracking-widest text-primary uppercase mb-2">Our Clinical Standards</span>
-              <h2 className="text-2xl sm:text-3xl font-heading font-semibold text-foreground tracking-tight mb-6">Why Trust Aura Dental</h2>
+              <span className="text-xs font-bold tracking-widest text-primary uppercase mb-2">Our Clinical Standards</span>
+              <h2 className="text-2xl sm:text-3xl font-heading font-semibold text-foreground tracking-tight mb-6">Why Trust {settings?.clinicName || "Aura Dental"}</h2>
               
               <div className="flex flex-wrap gap-1.5 border-b border-border w-full pb-3 mb-6">
                 {trustTabs.map((tab, idx) => (
@@ -351,10 +662,10 @@ export default function Home() {
               </div>
 
               <div className="text-left">
-                <p className="text-xs text-muted-foreground font-light leading-relaxed mb-6">{trustTabs[activeTrustTab].desc}</p>
+                <p className="text-sm text-muted-foreground font-light leading-relaxed mb-6">{trustTabs[activeTrustTab].desc}</p>
                 <div className="flex flex-col gap-2">
                   {trustTabs[activeTrustTab].points.map((p, pIdx) => (
-                    <div key={pIdx} className="flex gap-2 items-center text-xs font-light text-foreground/80">
+                    <div key={pIdx} className="flex gap-2 items-center text-sm font-light text-foreground/80">
                       <CheckCircle2 className="size-4 text-primary shrink-0" />
                       <span>{p}</span>
                     </div>
@@ -366,165 +677,285 @@ export default function Home() {
         </Container>
       </Section>
 
+      {/* 4.5 OUR SERVICES: HORIZONTAL SCROLL PINNED SECTION */}
+      <section 
+        ref={servicesSectionRef} 
+        className="relative bg-white overflow-hidden lg:py-0 py-16 border-b border-border/30"
+      >
+        <div 
+          ref={servicesStickyRef} 
+          className="lg:h-screen w-full flex flex-col justify-center overflow-hidden py-6 lg:py-8 relative"
+        >
+          <Container className="mb-6 lg:mb-8 shrink-0 text-left">
+            <span className="text-xs font-bold tracking-widest text-primary bg-light-green/75 px-3 py-1 rounded-full uppercase">
+              Featured Specialties
+            </span>
+            <h2 className="text-2xl lg:text-4xl font-heading font-semibold text-slate-900 tracking-tight mt-2.5">
+              Our Services
+            </h2>
+            <p className="text-sm text-slate-500 font-light mt-1.5 max-w-md">
+              Discover our core dental treatments. Desktop users can scroll vertically to navigate services horizontally.
+            </p>
+          </Container>
+
+          {/* Scrolling horizontal card container */}
+          <div className="w-full overflow-hidden">
+            <div 
+              ref={servicesScrollRef} 
+              className="flex flex-col lg:flex-row gap-6 px-4 lg:px-[10vw] w-full lg:w-max pb-4"
+            >
+              {servicesList.map((service, idx) => {
+                const IconComponent = typeof service.icon === "string"
+                  ? (LucideIcons[service.icon] || LucideIcons.Stethoscope)
+                  : service.icon;
+                return (
+                  <div 
+                    key={idx}
+                    className="service-card-anim shrink-0 w-full lg:w-[450px] lg:h-[440px] bg-white border border-slate-100 rounded-2xl p-5 lg:p-6 flex flex-col justify-between group hover:shadow-premium hover:-translate-y-1.5 hover:border-primary/20 transition-all duration-300 relative"
+                  >
+                    <div>
+                      {/* Image Frame with zoom on hover */}
+                      <div className="relative w-full h-40 lg:h-44 rounded-xl overflow-hidden mb-4 bg-slate-50 border border-slate-100/50">
+                        <img 
+                          src={service.img} 
+                          alt={service.title} 
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-106"
+                        />
+                        {/* Floating Service Icon */}
+                        <div className="absolute top-3 right-3 size-9 rounded-full bg-white/95 backdrop-blur-xs shadow-soft flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+                          <IconComponent className="size-4.5" />
+                        </div>
+                      </div>
+
+                      <h3 className="font-heading font-semibold text-base lg:text-lg text-slate-900 mb-1.5 leading-snug group-hover:text-primary transition-colors">
+                        {service.title}
+                      </h3>
+                      <p className="text-xs lg:text-sm text-slate-500 font-light leading-relaxed">
+                        {service.desc}
+                      </p>
+                    </div>
+
+                    <div className="mt-4 pt-3 border-t border-slate-100/80 flex justify-between items-center">
+                      <Link 
+                        href={service.href} 
+                        className="px-4 py-2 border border-slate-200 hover:border-primary hover:bg-light-green hover:text-primary text-xs font-semibold text-slate-700 rounded-lg transition-all duration-300 hover:-translate-y-0.5"
+                      >
+                        Learn More
+                      </Link>
+                      <span className="text-xs font-bold text-slate-300 group-hover:text-primary/40 transition-colors">
+                        0{idx + 1}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* 5. INLINE APPOINTMENT FORM CARD */}
       <Section id="book" size="md" className="bg-white border-b border-border/30 relative z-10">
         <Container className="max-w-3xl">
           <Card className="bg-alt-background border border-border/80 p-6 sm:p-8 rounded-2xl shadow-soft">
             <div className="text-center mb-6">
               <h3 className="text-xl font-heading font-semibold text-foreground">Schedule Consultation with Dr. Vance</h3>
-              <p className="text-xs text-muted-foreground font-light mt-1">Book your slot. Our care coordinator will call to verify details.</p>
+              <p className="text-sm text-muted-foreground font-light mt-1">Book your slot. Our care coordinator will call to verify details.</p>
             </div>
 
-            {formSubmitted ? (
-              <div className="bg-light-green/40 border border-primary/20 p-6 rounded-xl text-center flex flex-col items-center gap-3">
-                <ShieldCheck className="size-10 text-primary" />
-                <h4 className="font-semibold text-sm text-foreground">Booking Request Confirmed!</h4>
-                <p className="text-xs text-muted-foreground font-light max-w-sm">We have received your details and will call your phone shortly.</p>
-              </div>
+            <div className="flex justify-center border-b border-slate-100 mb-6">
+              <button
+                type="button"
+                onClick={() => setFormTab("appointment")}
+                className={`pb-2.5 px-4 text-xs font-semibold uppercase tracking-wider border-b-2 transition-all outline-none ${
+                  formTab === "appointment"
+                    ? "border-primary text-primary font-bold"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Book Consultation
+              </button>
+              <button
+                type="button"
+                onClick={() => setFormTab("contact")}
+                className={`pb-2.5 px-4 text-xs font-semibold uppercase tracking-wider border-b-2 transition-all outline-none ${
+                  formTab === "contact"
+                    ? "border-primary text-primary font-bold"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Send Us a Message
+              </button>
+            </div>
+
+            {formTab === "appointment" ? (
+              formSubmitted ? (
+                <div className="bg-light-green/40 border border-primary/20 p-6 rounded-xl text-center flex flex-col items-center gap-3">
+                  <ShieldCheck className="size-10 text-primary" />
+                  <h4 className="font-semibold text-sm text-foreground">Booking Request Confirmed!</h4>
+                  <p className="text-sm text-muted-foreground font-light max-w-sm">
+                    We have received your appointment request, and it is currently awaiting confirmation from our care coordinator.
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleBook} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {bookingError && (
+                    <div className="sm:col-span-2 p-3 bg-red-500/10 border border-red-500/20 text-red-400 text-xs rounded-lg text-left">
+                      {bookingError}
+                    </div>
+                  )}
+                  <input
+                    type="text"
+                    placeholder="Full Name"
+                    required
+                    value={bookName}
+                    onChange={(e) => setBookName(e.target.value)}
+                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
+                  />
+                  <input
+                    type="tel"
+                    placeholder="Phone Number"
+                    required
+                    value={bookPhone}
+                    onChange={(e) => setBookPhone(e.target.value)}
+                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
+                  />
+                  <input
+                    type="email"
+                    placeholder="Email Address (Optional)"
+                    value={bookEmail}
+                    onChange={(e) => setBookEmail(e.target.value)}
+                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
+                  />
+                  <select
+                    required
+                    disabled={servicesLoading}
+                    value={bookServiceId}
+                    onChange={(e) => setBookServiceId(e.target.value)}
+                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 text-slate-700 disabled:opacity-60 disabled:cursor-wait"
+                  >
+                    {servicesLoading ? (
+                      <option value="">Loading services...</option>
+                    ) : bookingServices.length === 0 ? (
+                      <option value="">No services available</option>
+                    ) : (
+                      <>
+                        <option value="">Select Treatment...</option>
+                        {bookingServices.map((service) => (
+                          <option key={service.id} value={service.id}>
+                            {service.title}
+                          </option>
+                        ))}
+                      </>
+                    )}
+                  </select>
+                  <input
+                    type="date"
+                    required
+                    value={bookDate}
+                    onChange={(e) => setBookDate(e.target.value)}
+                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
+                  />
+                  <select
+                    required
+                    value={bookTime}
+                    onChange={(e) => setBookTime(e.target.value)}
+                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 text-slate-700"
+                  >
+                    <option value="">Select Time Slot...</option>
+                    <option value="09:00 AM">09:00 AM</option>
+                    <option value="10:00 AM">10:00 AM</option>
+                    <option value="11:00 AM">11:00 AM</option>
+                    <option value="12:00 PM">12:00 PM</option>
+                    <option value="02:00 PM">02:00 PM</option>
+                    <option value="03:00 PM">03:00 PM</option>
+                    <option value="04:00 PM">04:00 PM</option>
+                    <option value="05:00 PM">05:00 PM</option>
+                  </select>
+                  <input
+                    type="text"
+                    placeholder="Reason for Visit (Optional)"
+                    value={bookReason}
+                    onChange={(e) => setBookReason(e.target.value)}
+                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 sm:col-span-2"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="sm:col-span-2 py-3 bg-[#84cc16] hover:bg-[#65a30d] text-white font-semibold rounded-lg text-sm cursor-pointer shadow-soft transition-colors mt-2"
+                  >
+                    {isSubmitting ? "Sending details..." : "Book Consultation Now"}
+                  </button>
+                </form>
+              )
             ) : (
-              <form onSubmit={handleBook} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <input
-                  type="text"
-                  placeholder="Full Name"
-                  required
-                  className="bg-white border border-border px-4 py-2.5 rounded-lg text-xs outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
-                />
-                <input
-                  type="tel"
-                  placeholder="Phone Number"
-                  required
-                  className="bg-white border border-border px-4 py-2.5 rounded-lg text-xs outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
-                />
-                <input
-                  type="email"
-                  placeholder="Email Address"
-                  required
-                  className="bg-white border border-border px-4 py-2.5 rounded-lg text-xs outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
-                />
-                <select
-                  required
-                  className="bg-white border border-border px-4 py-2.5 rounded-lg text-xs outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
-                >
-                  <option value="">Select Treatment...</option>
-                  {treatmentsList.map((t, idx) => (
-                    <option key={idx} value={t.title}>{t.title}</option>
-                  ))}
-                </select>
-                <input
-                  type="date"
-                  required
-                  className="bg-white border border-border px-4 py-2.5 rounded-lg text-xs outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 sm:col-span-2"
-                />
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="sm:col-span-2 py-3 bg-[#84cc16] hover:bg-[#65a30d] text-white font-semibold rounded-lg text-xs cursor-pointer shadow-soft transition-colors mt-2"
-                >
-                  {isSubmitting ? "Sending details..." : "Book Consultation Now"}
-                </button>
-              </form>
+              contactSubmitted ? (
+                <div className="bg-light-green/40 border border-primary/20 p-6 rounded-xl text-center flex flex-col items-center gap-3">
+                  <ShieldCheck className="size-10 text-primary" />
+                  <h4 className="font-semibold text-sm text-foreground">Message Sent Successfully!</h4>
+                  <p className="text-sm text-muted-foreground font-light max-w-sm">
+                    Thank you for reaching out. We have received your query and will reply to your email address shortly.
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleContactSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {contactError && (
+                    <div className="sm:col-span-2 p-3 bg-red-500/10 border border-red-500/20 text-red-400 text-xs rounded-lg text-left">
+                      {contactError}
+                    </div>
+                  )}
+                  <input
+                    type="text"
+                    placeholder="Full Name"
+                    required
+                    value={contactName}
+                    onChange={(e) => setContactName(e.target.value)}
+                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
+                  />
+                  <input
+                    type="tel"
+                    placeholder="Phone Number (Optional)"
+                    value={contactPhone}
+                    onChange={(e) => setContactPhone(e.target.value)}
+                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
+                  />
+                  <input
+                    type="email"
+                    placeholder="Email Address"
+                    required
+                    value={contactEmail}
+                    onChange={(e) => setContactEmail(e.target.value)}
+                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 sm:col-span-2"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Subject (Optional)"
+                    value={contactSubject}
+                    onChange={(e) => setContactSubject(e.target.value)}
+                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 sm:col-span-2"
+                  />
+                  <textarea
+                    placeholder="Your Message..."
+                    required
+                    value={contactMessage}
+                    onChange={(e) => setContactMessage(e.target.value)}
+                    rows={4}
+                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 sm:col-span-2 resize-none"
+                  />
+                  <button
+                    type="submit"
+                    disabled={contactSubmitting}
+                    className="sm:col-span-2 py-3 bg-[#84cc16] hover:bg-[#65a30d] text-white font-semibold rounded-lg text-sm cursor-pointer shadow-soft transition-colors mt-2"
+                  >
+                    {contactSubmitting ? "Sending message..." : "Send Message Now"}
+                  </button>
+                </form>
+              )
             )}
           </Card>
         </Container>
       </Section>
 
-      {/* 6. AURA DENTAL TREATMENTS GRID (SIMPLE, NEAT, CLEAN WHITE CARDS WITH PRIMARY ACCENTS) */}
-      <Section id="treatments" size="md" className="bg-alt-background border-b border-border/30 relative z-10 bg-grid-pattern">
-        <Container>
-          <div className="text-center max-w-lg mx-auto mb-12">
-            <h2 className="text-3xl font-heading font-semibold text-foreground tracking-tight">Clinical Treatments</h2>
-            <p className="text-xs text-muted-foreground font-light mt-1">Explore all 14 clinical dental procedures matching top health guidelines.</p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {treatmentsList.map((t, idx) => {
-              const slug = t.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-              return (
-                <Card
-                  key={idx}
-                  className="p-5 border border-slate-100 bg-white rounded-xl flex flex-col justify-between items-start text-left shadow-soft hover:shadow-medium hover:border-primary/30 transition-all duration-300 group hover:-translate-y-1 h-48"
-                >
-                  <div className="w-full flex flex-col items-start">
-                    <div className="w-6 h-1 rounded-full bg-primary/20 group-hover:bg-primary transition-colors mb-4" />
-                    <h4 className="font-heading font-semibold text-sm text-slate-800 leading-snug group-hover:text-primary transition-colors">{t.title}</h4>
-                    <p className="text-[11px] text-slate-500 font-light mt-2 leading-relaxed">{t.desc}</p>
-                  </div>
-                  
-                  <Link
-                    href={`/treatments/${slug}`}
-                    className="text-[10px] text-primary hover:text-primary-hover font-semibold transition-colors mt-auto flex items-center gap-0.5"
-                  >
-                    <span>Get Details</span>
-                    <ChevronRight className="size-3 transition-transform group-hover:translate-x-0.5" />
-                  </Link>
-                </Card>
-              );
-            })}
-          </div>
-        </Container>
-      </Section>
-
-      {/* 7. PATIENT REVIEWS */}
-      <Section size="md" className="bg-white border-b border-border/30 relative z-10">
-        <Container>
-          <div className="text-center max-w-lg mx-auto mb-10">
-            <h2 className="text-2xl font-heading font-semibold text-foreground">Patient Testimonials</h2>
-            <p className="text-xs text-muted-foreground font-light mt-1">Real feedback from families in our checkup and restorative programs.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonials.map((t, idx) => (
-              <Card key={idx} variant="default" className="p-5 border border-border/60 rounded-xl bg-white hover:border-primary hover:shadow-soft transition-all duration-300 flex flex-col justify-between">
-                <div>
-                  <div className="flex gap-0.5 text-amber-500 mb-3">
-                    {[...Array(t.rating)].map((_, i) => (
-                      <Star key={i} className="size-3.5 fill-amber-500 text-amber-500" />
-                    ))}
-                  </div>
-                  <p className="italic font-light text-foreground/80 text-xs leading-relaxed mb-4">
-                    &ldquo;{t.review}&rdquo;
-                  </p>
-                </div>
-                <div className="flex items-center gap-3 border-t border-border/50 pt-4">
-                  <div className="size-7 rounded-full bg-light-green flex items-center justify-center text-primary font-bold text-[10px]">
-                    {t.name[0]}
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-xs text-foreground">{t.name}</h4>
-                    <p className="text-[9px] text-muted-foreground font-light">{t.date}</p>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </Container>
-      </Section>
-
-      {/* 8. PATIENT CARE & INSIGHTS (BLOG) */}
-      <Section id="patient-care" size="md" className="bg-alt-background border-b border-border/30 relative z-10 bg-dot-pattern">
-        <Container>
-          <div className="text-center max-w-lg mx-auto mb-10">
-            <h2 className="text-2xl font-heading font-semibold text-foreground">Dental Insights by Aura Dental</h2>
-            <p className="text-xs text-muted-foreground font-light mt-1">Read clinical health articles written directly by our doctors.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {articles.map((art, idx) => (
-              <Card key={idx} variant="default" className="p-5 border border-border/60 bg-white rounded-xl flex flex-col justify-between hover:border-primary hover:shadow-soft transition-all duration-300 text-left group hover:-translate-y-0.5">
-                <div>
-                  <span className="text-[9px] font-semibold text-primary uppercase tracking-wider bg-light-green/70 px-2 py-0.5 rounded">{art.tag}</span>
-                  <h4 className="font-semibold text-xs text-foreground mt-3 group-hover:text-primary leading-snug transition-colors">{art.title}</h4>
-                  <p className="text-[10px] text-muted-foreground font-light mt-2 leading-relaxed">{art.desc}</p>
-                </div>
-                <a href="#book" className="text-[10px] text-primary hover:underline font-semibold mt-5 flex items-center gap-0.5">
-                  <span>Read Guide</span>
-                  <ArrowRight className="size-2.5" />
-                </a>
-              </Card>
-            ))}
-          </div>
-        </Container>
-      </Section>
 
       {/* 9. DOCTOR JOURNEY / CTA FOOTER BANNER */}
       <Section id="meet-doctor" size="md" className="bg-primary text-white py-12 relative z-10">
@@ -543,11 +974,11 @@ export default function Home() {
 
             {/* Right Details */}
             <div className="md:col-span-7 flex flex-col items-start text-left">
-              <Badge className="bg-white/25 text-white hover:bg-white/20 border-none rounded px-2.5 py-1 text-[10px] tracking-wider uppercase font-semibold mb-3">
+              <Badge className="bg-white/25 text-white hover:bg-white/20 border-none rounded px-2.5 py-1 text-xs tracking-wider uppercase font-semibold mb-3">
                 10 Years of Trust
               </Badge>
               <h3 className="text-2xl font-heading font-semibold">Your Journey to a Happier Smile Starts Here</h3>
-              <p className="text-xs text-white/80 font-light leading-relaxed mt-3 max-w-md">
+              <p className="text-sm text-white/80 font-light leading-relaxed mt-3 max-w-md">
                 Dr. Eleanor Vance, DDS, is accredited by the Academy of Conservative Dentistry and is committed to minimal-intervention therapies. Meet us for custom smile maps.
               </p>
               
@@ -555,7 +986,7 @@ export default function Home() {
                 <a href="#book" className={cn(buttonVariants({ size: "sm", variant: "secondary" }), "h-10 px-6 bg-white text-primary hover:bg-light-green font-semibold rounded-lg shadow-sm")}>
                   Book Appointment
                 </a>
-                <Link href="/about" className="h-10 px-6 border border-white/20 hover:bg-white/10 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors">
+                <Link href="/about" className="h-10 px-6 border border-white/20 hover:bg-white/10 rounded-lg text-sm font-semibold flex items-center justify-center gap-1.5 transition-colors">
                   <span>Learn More</span>
                   <ArrowRight className="size-3.5" />
                 </Link>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -12,6 +12,27 @@ import { Container } from "./Container";
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  if (pathname.startsWith("/admin")) {
+    return null;
+  }
+  const [settings, setSettings] = useState(null);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/content/settings");
+        const data = await res.json();
+        if (res.ok && data.success) {
+          setSettings(data.data);
+        }
+      } catch (err) {
+        console.error("Failed to load header settings:", err);
+      }
+    };
+    fetchSettings();
+  }, []);
+
+  const clinicName = settings?.clinicName || "Aura Dental";
 
   const treatmentsColumns = [
     {
@@ -48,11 +69,13 @@ export function Header() {
   const patientCareItems = [
     { name: "FAQs", slug: "faqs" },
     { name: "Patient Testimonials", slug: "testimonials" },
-    { name: "Insurance & Payment Options", slug: "insurance-payment" }
+    { name: "Insurance & Payment Options", slug: "insurance-payment" },
+    { name: "Dental Insights", slug: "insights" }
   ];
 
   const navLinks = [
     { label: "Home", href: "/" },
+    { label: "About Us", href: "/about" },
     { label: "Treatments", href: "/#treatments", isDropdown: true },
     { label: "Patient Care", href: "/#patient-care", isDropdown: true },
     { label: "Why Trust Us", href: "/#why-trust-us" },
@@ -66,7 +89,7 @@ export function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 font-heading font-semibold text-lg text-primary tracking-tight">
             <Stethoscope className="size-6 text-primary" strokeWidth={2.5} />
-            <span>AURA DENTAL</span>
+            <span className="uppercase">{clinicName}</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -91,18 +114,18 @@ export function Header() {
                     </span>
 
                     {/* Dropdown container */}
-                    <div className="absolute top-full left-1/2 -translate-x-1/2 hidden group-hover:block pt-1 z-50">
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2.5 z-50 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 ease-out">
                       {isTreatments ? (
-                        <div className="w-[660px] bg-white border border-slate-100 rounded-xl shadow-premium p-5 grid grid-cols-3 gap-6 text-left">
+                        <div className="w-[680px] bg-white/95 backdrop-blur-md border border-slate-100/80 rounded-2xl shadow-premium p-6 grid grid-cols-3 gap-6 text-left">
                           {treatmentsColumns.map((col, cIdx) => (
                             <div key={cIdx} className="flex flex-col gap-2">
-                              <h5 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 pb-1.5">{col.title}</h5>
+                              <h5 className="text-[10px] font-bold text-primary/80 uppercase tracking-widest border-b border-slate-100/60 pb-2">{col.title}</h5>
                               <div className="flex flex-col gap-1">
                                 {col.items.map((item, iIdx) => (
                                   <Link
                                     key={iIdx}
                                     href={`/treatments/${item.slug}`}
-                                    className="text-xs text-slate-600 hover:text-primary transition-colors py-0.5 font-medium block"
+                                    className="text-xs text-slate-600 hover:text-primary hover:bg-light-green/45 transition-all px-3 py-1.5 rounded-lg font-medium block transform hover:translate-x-1 duration-200"
                                   >
                                     {item.name}
                                   </Link>
@@ -112,12 +135,12 @@ export function Header() {
                           ))}
                         </div>
                       ) : (
-                        <div className="w-56 bg-white border border-slate-100 rounded-xl shadow-premium p-2 flex flex-col gap-0.5 text-left">
+                        <div className="w-60 bg-white/95 backdrop-blur-md border border-slate-100/80 rounded-2xl shadow-premium p-3 flex flex-col gap-1 text-left">
                           {patientCareItems.map((item, idx) => (
                             <Link
                               key={idx}
                               href={`/patient-care/${item.slug}`}
-                              className="text-xs text-slate-600 hover:text-primary hover:bg-slate-50 transition-colors px-3 py-2 rounded-lg font-medium block"
+                              className="text-xs text-slate-600 hover:text-primary hover:bg-light-green/45 transition-all px-3 py-2 rounded-lg font-medium block transform hover:translate-x-1 duration-200"
                             >
                               {item.name}
                             </Link>
@@ -129,8 +152,11 @@ export function Header() {
                 );
               }
 
+              const isHash = link.href.startsWith("#") || link.href.includes("/#");
+              const LinkComponent = isHash ? "a" : Link;
+
               return (
-                <a
+                <LinkComponent
                   key={link.href}
                   href={link.href}
                   className={cn(
@@ -139,7 +165,7 @@ export function Header() {
                   )}
                 >
                   {link.label}
-                </a>
+                </LinkComponent>
               );
             })}
             <a href="#book" className={cn(buttonVariants({ size: "sm" }), "ml-4 bg-[#84cc16] hover:bg-[#65a30d] text-white font-semibold rounded-lg")}>
@@ -204,8 +230,11 @@ export function Header() {
                   );
                 }
 
+                const isHash = link.href.startsWith("#") || link.href.includes("/#");
+                const LinkComponent = isHash ? "a" : Link;
+
                 return (
-                  <a
+                  <LinkComponent
                     key={link.href}
                     href={link.href}
                     onClick={() => setIsOpen(false)}
@@ -215,7 +244,7 @@ export function Header() {
                     )}
                   >
                     {link.label}
-                  </a>
+                  </LinkComponent>
                 );
               })}
               <a

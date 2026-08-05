@@ -137,6 +137,7 @@
   }
   html {
     @apply font-sans;
+    font-size: 18px;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-heading tracking-tight;
@@ -172,4 +173,19 @@
     background-size: 20px 20px;
     background-image: radial-gradient(circle, rgba(21, 128, 61, 0.06) 1.2px, transparent 1.2px);
   }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 35s linear infinite;
 }
