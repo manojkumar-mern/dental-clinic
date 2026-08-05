@@ -1,37 +1,31 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 export const Card = React.forwardRef(
   ({ className, hoverEffect = true, variant = "default", children, ...props }, ref) => {
-    const motionProps = hoverEffect
-      ? {
-          whileHover: { y: -4 },
-          transition: { duration: 0.3, ease: [0.25, 1, 0.5, 1] },
-        }
-      : {};
-
     const variantStyles = {
       default: "border border-border bg-card text-card-foreground shadow-soft",
       premium: "border border-border/60 bg-card text-card-foreground shadow-premium backdrop-blur-[2px]",
       secondary: "bg-secondary/40 border border-secondary/20 text-secondary-foreground",
     };
 
+    const hoverStyles = hoverEffect ? "hover:-translate-y-[2px] hover:shadow-md transition-all duration-300" : "";
+
     return (
-      <motion.div
+      <div
         ref={ref}
         className={cn(
-          "rounded-2xl p-6 sm:p-8 flex flex-col gap-4 overflow-hidden relative transition-all duration-300",
+          "rounded-2xl p-6 sm:p-8 flex flex-col gap-4 overflow-hidden relative",
           variantStyles[variant],
+          hoverStyles,
           className
         )}
-        {...motionProps}
         {...props}
       >
         {children}
-      </motion.div>
+      </div>
     );
   }
 );

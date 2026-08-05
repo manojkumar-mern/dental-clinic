@@ -3,6 +3,7 @@ import { constructMetadata } from "@/lib/metadata";
 import { ToastProvider } from "@/components/ui/toast";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { Preloader } from "@/components/shared/Preloader";
 import "./globals.css";
 
 const inter = Inter({
@@ -27,9 +28,11 @@ export default function RootLayout({ children }) {
     >
       <body className="min-h-full bg-background text-foreground font-sans flex flex-col selection:bg-light-green selection:text-primary-hover">
         <ToastProvider>
-          <Header />
-          <main className="flex-1 flex flex-col">{children}</main>
-          <Footer />
+          <Preloader>
+            <Header />
+            <main className="flex-1 flex flex-col">{children}</main>
+            <Footer />
+          </Preloader>
         </ToastProvider>
       </body>
     </html>

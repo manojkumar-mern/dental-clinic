@@ -2,6 +2,8 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { FadeUp, SlideInLeft, SlideInRight, StaggerContainer, StaggerItem } from "@/components/ui/motion";
 import { 
   ArrowLeft, 
   ArrowUp, 
@@ -212,19 +214,23 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             {/* Left Content */}
-            <div className="lg:col-span-7 text-left flex flex-col items-start">
-              <span className="text-xs font-bold tracking-widest text-primary bg-light-green/80 px-3.5 py-1.5 rounded-full uppercase mb-5 shadow-xs">
+            <StaggerContainer className="lg:col-span-7 text-left flex flex-col items-start">
+              <StaggerItem className="text-xs font-bold tracking-widest text-primary bg-light-green/80 px-3.5 py-1.5 rounded-full uppercase mb-5 shadow-xs">
                 ★ Redefining Dental Excellence
-              </span>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-heading font-semibold text-foreground tracking-tight leading-[1.08] mb-6">
-                Trusted <span className="text-primary relative inline-block">Care<span className="absolute bottom-1 left-0 w-full h-1 bg-[#84cc16] rounded-full opacity-60"></span></span><br />
-                Beautiful <span className="text-secondary">Smiles</span>
-              </h1>
-              <p className="text-sm sm:text-base text-muted-foreground font-light max-w-lg leading-relaxed mb-8">
-                We combine advanced clinical technology with a warm, personalized touch. Our approach focuses on gentle, conservative treatments to safeguard your natural smile for a lifetime.
-              </p>
+              </StaggerItem>
+              <StaggerItem>
+                <h1 className="text-4xl sm:text-5xl md:text-6xl font-heading font-semibold text-foreground tracking-tight leading-[1.08] mb-6">
+                  Trusted <span className="text-primary relative inline-block">Care<span className="absolute bottom-1 left-0 w-full h-1 bg-[#84cc16] rounded-full opacity-60"></span></span><br />
+                  Beautiful <span className="text-secondary">Smiles</span>
+                </h1>
+              </StaggerItem>
+              <StaggerItem>
+                <p className="text-sm sm:text-base text-muted-foreground font-light max-w-lg leading-relaxed mb-8">
+                  We combine advanced clinical technology with a warm, personalized touch. Our approach focuses on gentle, conservative treatments to safeguard your natural smile for a lifetime.
+                </p>
+              </StaggerItem>
               
-              <div className="flex flex-wrap gap-4 text-xs font-medium text-slate-600 mb-8">
+              <StaggerItem className="flex flex-wrap gap-4 text-xs font-medium text-slate-600 mb-8">
                 <span className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-border/40 rounded-full shadow-xs">
                   <CheckCircle2 className="size-4 text-primary shrink-0" /> Minimal Intervention
                 </span>
@@ -234,29 +240,32 @@ export default function AboutPage() {
                 <span className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-border/40 rounded-full shadow-xs">
                   <CheckCircle2 className="size-4 text-primary shrink-0" /> Safe Autoclave Sterility
                 </span>
-              </div>
+              </StaggerItem>
 
-              <div className="flex gap-3">
+              <StaggerItem className="flex gap-3">
                 <Link href="/#book" className={cn(buttonVariants({ size: "lg" }), "bg-[#84cc16] hover:bg-[#65a30d] text-white font-semibold rounded-xl shadow-md shadow-light-green/20 transition-all duration-300 hover:-translate-y-0.5")}>
                   Book Consultation
                 </Link>
                 <a href="tel:+15550192834" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "border-border text-foreground hover:bg-alt-background rounded-xl transition-all duration-300 hover:-translate-y-0.5")}>
                   Call Clinic
                 </a>
-              </div>
-            </div>
+              </StaggerItem>
+            </StaggerContainer>
 
             {/* Right Hologram Visual */}
-            <div className="lg:col-span-5 flex justify-center relative">
+            <SlideInRight className="lg:col-span-5 flex justify-center relative">
               <div className="absolute inset-0 bg-primary/10 rounded-full filter blur-3xl pointer-events-none scale-75 animate-pulse" />
               <div className="relative w-full max-w-[400px] aspect-square rounded-2xl overflow-hidden border border-white/80 bg-white/45 backdrop-blur-md shadow-premium p-4 group transition-all duration-500 hover:shadow-2xl hover:border-primary/20">
-                <img
+                <Image
                   src="/images/tooth_hologram.png"
                   alt="3D Hologram of Tooth Restorations"
-                  className="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-102"
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 400px"
+                  className="object-cover rounded-xl transition-transform duration-500 group-hover:scale-[1.03]"
                 />
               </div>
-            </div>
+            </SlideInRight>
 
           </div>
         </Container>
@@ -268,7 +277,7 @@ export default function AboutPage() {
         className="w-full py-24 bg-white relative overflow-hidden"
       >
         <Container>
-          <div className="text-center max-w-xl mx-auto mb-20">
+          <FadeUp className="text-center max-w-xl mx-auto mb-20">
             <span className="text-xs font-bold tracking-widest text-primary uppercase bg-light-green/50 px-3 py-1 rounded-full">
               Historical Timeline
             </span>
@@ -278,7 +287,7 @@ export default function AboutPage() {
             <p className="text-sm text-muted-foreground mt-2 font-light">
               How we built a decade of clinical excellence and patient trust.
             </p>
-          </div>
+          </FadeUp>
 
           {/* Timeline Wrapper */}
           <div className="relative max-w-4xl mx-auto">
@@ -292,13 +301,13 @@ export default function AboutPage() {
             />
 
             {/* Timeline Nodes */}
-            <div className="space-y-16">
+            <StaggerContainer className="space-y-16">
               {timelineEvents.map((event, idx) => {
                 const IconComponent = event.icon;
                 const isEven = idx % 2 === 0;
 
                 return (
-                  <div 
+                  <StaggerItem 
                     key={idx} 
                     className="flex flex-col sm:flex-row relative w-full items-start"
                   >
@@ -333,7 +342,7 @@ export default function AboutPage() {
                       <div className="absolute top-[34px] left-[32px] w-[48px] h-0.5 bg-slate-200/80 sm:hidden" />
 
                       {/* Card Content */}
-                      <div className="p-6 rounded-2xl border border-border bg-white shadow-soft hover:shadow-premium hover:border-primary/20 transition-all duration-300 group hover:-translate-y-1 text-left">
+                      <div className="p-6 rounded-2xl border border-border bg-white shadow-soft hover:shadow-md hover:border-primary/20 transition-all duration-300 group hover:-translate-y-1 text-left">
                         <span className={cn(
                           "inline-block px-3 py-1 rounded-lg text-xs font-bold text-white bg-gradient-to-r mb-3",
                           event.color
@@ -348,10 +357,10 @@ export default function AboutPage() {
                         </p>
                       </div>
                     </div>
-                  </div>
+                  </StaggerItem>
                 );
               })}
-            </div>
+            </StaggerContainer>
           </div>
         </Container>
       </section>
@@ -364,7 +373,7 @@ export default function AboutPage() {
         <div className="absolute right-0 bottom-0 w-80 h-80 bg-primary/10 rounded-full filter blur-3xl pointer-events-none" />
         <Container>
           
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-16">
+          <FadeUp className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-16">
             <div className="lg:col-span-7 text-left">
               <span className="text-xs font-semibold tracking-wider text-secondary uppercase bg-white/10 px-3 py-1 rounded-md">
                 About the Practice
@@ -398,7 +407,7 @@ export default function AboutPage() {
                 <p className="text-xs text-slate-300 mt-1 uppercase font-semibold tracking-wider">Treatments</p>
               </div>
             </div>
-          </div>
+          </FadeUp>
 
           {/* Highlights Grid */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 pt-10 border-t border-white/10">

@@ -14,16 +14,14 @@ import {
   CreditCard,
   Percent
 } from "lucide-react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Image from "next/image";
+import { FadeUp, StaggerContainer, StaggerItem } from "@/components/ui/motion";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Card } from "@/components/cards";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
-gsap.registerPlugin(ScrollTrigger);
 
 export default function PatientCareDetailPage() {
   const params = useParams();
@@ -142,51 +140,7 @@ export default function PatientCareDetailPage() {
     }
   }, [slug]);
 
-  // Setup GSAP scroll animations
-  useEffect(() => {
-    let ctx = gsap.context(() => {
-      // Lazy load fade-up elements
-      gsap.utils.toArray(".animate-fade-up").forEach((elem) => {
-        gsap.fromTo(
-          elem,
-          { opacity: 0, y: 30 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: elem,
-              start: "top 85%",
-              toggleActions: "play none none none",
-            },
-          }
-        );
-      });
-
-      // Staggered list items
-      gsap.utils.toArray(".animate-stagger-parent").forEach((parent) => {
-        gsap.fromTo(
-          parent.children,
-          { opacity: 0, y: 20 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.5,
-            stagger: 0.1,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: parent,
-              start: "top 85%",
-              toggleActions: "play none none none",
-            },
-          }
-        );
-      });
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, [slug, faqsList, testimonialsList, galleryList]);
+  // GSAP removed in favor of Framer Motion variants.
 
   // 3. Render functions for different sections
   if (slug === "faqs") {
@@ -203,36 +157,37 @@ export default function PatientCareDetailPage() {
         </div>
 
         <Section size="md" className="bg-white">
-          <Container className="max-w-3xl animate-fade-up">
+          <FadeUp className="max-w-3xl mx-auto px-4 md:px-6 w-full">
             <div className="text-center mb-12">
               <HelpCircle className="size-10 text-primary mx-auto mb-3" />
               <h1 className="text-3xl font-heading font-semibold text-foreground tracking-tight">Frequently Asked Questions</h1>
               <p className="text-sm text-muted-foreground mt-2">Find quick answers about our procedures, bookings, and policies.</p>
             </div>
 
-            <div className="flex flex-col gap-4 animate-stagger-parent">
+            <StaggerContainer className="flex flex-col gap-4">
               {faqsList.map((faq, idx) => (
-                <Card 
-                  key={idx} 
-                  className={cn(
-                    "p-5 border cursor-pointer transition-all duration-300 rounded-xl bg-white",
-                    activeFaq === idx ? "border-primary shadow-soft" : "border-slate-100 hover:border-slate-200"
-                  )}
-                  onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
-                >
-                  <div className="flex justify-between items-center w-full">
-                    <h4 className="font-heading font-semibold text-base text-slate-800 leading-snug">{faq.q}</h4>
-                    <span className="text-primary font-bold text-lg">{activeFaq === idx ? "−" : "+"}</span>
-                  </div>
-                  {activeFaq === idx && (
-                    <p className="text-sm text-slate-600 font-light mt-3 leading-relaxed border-t border-slate-50 pt-3">
-                      {faq.a}
-                    </p>
-                  )}
-                </Card>
+                <StaggerItem key={idx}>
+                  <Card 
+                    className={cn(
+                      "p-5 border cursor-pointer transition-all duration-300 rounded-xl bg-white text-left",
+                      activeFaq === idx ? "border-primary shadow-soft" : "border-slate-100 hover:border-slate-200"
+                    )}
+                    onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
+                  >
+                    <div className="flex justify-between items-center w-full">
+                      <h4 className="font-heading font-semibold text-base text-slate-800 leading-snug">{faq.q}</h4>
+                      <span className="text-primary font-bold text-lg">{activeFaq === idx ? "−" : "+"}</span>
+                    </div>
+                    {activeFaq === idx && (
+                      <p className="text-sm text-slate-600 font-light mt-3 leading-relaxed border-t border-slate-50 pt-3">
+                        {faq.a}
+                      </p>
+                    )}
+                  </Card>
+                </StaggerItem>
               ))}
-            </div>
-          </Container>
+            </StaggerContainer>
+          </FadeUp>
         </Section>
       </div>
     );
@@ -252,38 +207,40 @@ export default function PatientCareDetailPage() {
         </div>
 
         <Section size="md" className="bg-white">
-          <Container className="animate-fade-up">
-            <div className="text-center mb-12">
+          <Container>
+            <FadeUp className="text-center mb-12">
               <Star className="size-10 text-primary mx-auto mb-3 fill-primary/10" />
               <h1 className="text-3xl font-heading font-semibold text-foreground tracking-tight">Patient Testimonials</h1>
               <p className="text-sm text-muted-foreground mt-2">Real feedback from patients who completed treatments at Aura Dental.</p>
-            </div>
+            </FadeUp>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-stagger-parent">
+            <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {testimonialsList.map((t, idx) => (
-                <Card key={idx} className="p-5 border border-slate-100 rounded-xl bg-white hover:border-primary/30 hover:shadow-soft transition-all duration-300 flex flex-col justify-between h-48 text-left">
-                  <div>
-                    <div className="flex gap-0.5 text-amber-500 mb-3">
-                      {[...Array(t.rating)].map((_, i) => (
-                        <Star key={i} className="size-3.5 fill-amber-500 text-amber-500" />
-                      ))}
-                    </div>
-                    <p className="italic font-light text-slate-600 text-sm leading-relaxed mb-4">
-                      &ldquo;{t.review}&rdquo;
-                    </p>
-                  </div>
-                  <div className="flex justify-between items-center border-t border-slate-50 pt-3">
+                <StaggerItem key={idx}>
+                  <Card className="p-5 border border-slate-100 rounded-xl bg-white hover:border-primary/30 hover:shadow-soft transition-all duration-300 flex flex-col justify-between h-48 text-left hover:-translate-y-1">
                     <div>
-                      <h4 className="font-semibold text-sm text-slate-800">{t.name}</h4>
-                      <p className="text-xs text-muted-foreground font-light">{t.date}</p>
+                      <div className="flex gap-0.5 text-amber-500 mb-3">
+                        {[...Array(t.rating)].map((_, i) => (
+                          <Star key={i} className="size-3.5 fill-amber-500 text-amber-500" />
+                        ))}
+                      </div>
+                      <p className="italic font-light text-slate-600 text-sm leading-relaxed mb-4">
+                        &ldquo;{t.review}&rdquo;
+                      </p>
                     </div>
-                    <Badge className="bg-light-green/60 text-primary hover:bg-light-green border-none text-[10px] font-semibold py-0.5 px-2 rounded-full uppercase">
-                      {t.treatment}
-                    </Badge>
-                  </div>
-                </Card>
+                    <div className="flex justify-between items-center border-t border-slate-50 pt-3">
+                      <div>
+                        <h4 className="font-semibold text-sm text-slate-800">{t.name}</h4>
+                        <p className="text-xs text-muted-foreground font-light">{t.date}</p>
+                      </div>
+                      <Badge className="bg-light-green/60 text-primary hover:bg-light-green border-none text-[10px] font-semibold py-0.5 px-2 rounded-full uppercase">
+                        {t.treatment}
+                      </Badge>
+                    </div>
+                  </Card>
+                </StaggerItem>
               ))}
-            </div>
+            </StaggerContainer>
           </Container>
         </Section>
       </div>
@@ -314,7 +271,7 @@ export default function PatientCareDetailPage() {
 
         {/* Hero Section */}
         <Section size="md" className="bg-white border-b border-border/30">
-          <Container className="max-w-4xl text-center animate-fade-up">
+          <FadeUp className="max-w-4xl text-center mx-auto px-4 w-full">
             <h1 className="text-3xl sm:text-4xl font-heading font-semibold text-foreground tracking-tight leading-[1.1]">
               Affordable Dental Care Made Easy
             </h1>
@@ -329,13 +286,13 @@ export default function PatientCareDetailPage() {
                 Talk to Our Team
               </a>
             </div>
-          </Container>
+          </FadeUp>
         </Section>
 
         {/* Content Section */}
         <Section id="emi-details" size="md" className="bg-alt-background border-b border-border/30">
-          <Container className="animate-fade-up">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          <Container>
+            <FadeUp className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
               {/* Left Card */}
               <div className="lg:col-span-5 flex">
                 <Card className="bg-[#1e3a8a] text-white p-8 rounded-2xl flex flex-col justify-between text-left shadow-soft w-full">
@@ -375,7 +332,7 @@ export default function PatientCareDetailPage() {
                   ))}
                 </div>
               </div>
-            </div>
+            </FadeUp>
           </Container>
         </Section>
       </div>
@@ -414,26 +371,28 @@ export default function PatientCareDetailPage() {
         </div>
 
         <Section size="md" className="bg-white">
-          <Container className="animate-fade-up">
-            <div className="text-center mb-12">
+          <Container>
+            <FadeUp className="text-center mb-12">
               <h1 className="text-3xl font-heading font-semibold text-foreground tracking-tight">Dental Insights by Aura Dental</h1>
               <p className="text-sm text-muted-foreground mt-2">Read clinical health articles written directly by our doctors.</p>
-            </div>
+            </FadeUp>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-stagger-parent">
+            <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {articles.map((art, idx) => (
-                <Card key={idx} variant="default" className="p-5 border border-border/60 bg-white rounded-xl flex flex-col justify-between hover:border-primary hover:shadow-soft transition-all duration-300 text-left group hover:-translate-y-0.5">
-                  <div>
-                    <span className="text-xs font-semibold text-primary uppercase tracking-wider bg-light-green/70 px-2 py-0.5 rounded">{art.tag}</span>
-                    <h4 className="font-semibold text-sm md:text-base text-foreground mt-3 group-hover:text-primary leading-snug transition-colors">{art.title}</h4>
-                    <p className="text-xs md:text-sm text-muted-foreground font-light mt-2 leading-relaxed">{art.desc}</p>
-                  </div>
-                  <a href="#book" className="text-xs text-primary hover:underline font-semibold mt-5 flex items-center gap-0.5">
-                    <span>Read Guide →</span>
-                  </a>
-                </Card>
+                <StaggerItem key={idx}>
+                  <Card variant="default" className="p-5 border border-border/60 bg-white rounded-xl flex flex-col justify-between hover:border-primary hover:shadow-soft transition-all duration-300 text-left group hover:-translate-y-1 h-full">
+                    <div>
+                      <span className="text-xs font-semibold text-primary uppercase tracking-wider bg-light-green/70 px-2 py-0.5 rounded">{art.tag}</span>
+                      <h4 className="font-semibold text-sm md:text-base text-foreground mt-3 group-hover:text-primary leading-snug transition-colors">{art.title}</h4>
+                      <p className="text-xs md:text-sm text-muted-foreground font-light mt-2 leading-relaxed">{art.desc}</p>
+                    </div>
+                    <a href="#book" className="text-xs text-primary hover:underline font-semibold mt-5 flex items-center gap-0.5">
+                      <span>Read Guide →</span>
+                    </a>
+                  </Card>
+                </StaggerItem>
               ))}
-            </div>
+            </StaggerContainer>
           </Container>
         </Section>
       </div>
@@ -454,34 +413,38 @@ export default function PatientCareDetailPage() {
         </div>
 
         <Section size="md" className="bg-white">
-          <Container className="animate-fade-up">
-            <div className="text-center mb-12">
+          <Container>
+            <FadeUp className="text-center mb-12">
               <h1 className="text-3xl font-heading font-semibold text-foreground tracking-tight">Smile Gallery</h1>
               <p className="text-sm text-muted-foreground mt-2">Clinical results and smiles achieved at {settings?.clinicName || "Aura Dental"}.</p>
-            </div>
+            </FadeUp>
 
             {galleryList.length === 0 ? (
-              <div className="text-center py-12 text-slate-400">
+              <FadeUp className="text-center py-12 text-slate-400">
                 <p>No gallery images uploaded yet.</p>
-              </div>
+              </FadeUp>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 animate-stagger-parent">
+              <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {galleryList.map((img, idx) => (
-                  <div key={idx} className="relative w-full aspect-[4/3] rounded-xl overflow-hidden border border-border shadow-soft group bg-muted text-left">
-                    <img
-                      src={img.imageUrl}
-                      alt={img.title || "Gallery Showcase"}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 p-4 flex items-end">
-                      <div>
-                        <p className="text-xs font-bold text-sky-400 uppercase tracking-wider">{img.category}</p>
-                        <h4 className="text-sm font-semibold text-white mt-1">{img.title || "Clinic Showcase"}</h4>
+                  <StaggerItem key={idx}>
+                    <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden border border-border shadow-soft group bg-muted text-left">
+                      <Image
+                        src={img.imageUrl}
+                        alt={img.title || "Gallery Showcase"}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 p-4 flex items-end">
+                        <div>
+                          <p className="text-xs font-bold text-sky-400 uppercase tracking-wider">{img.category}</p>
+                          <h4 className="text-sm font-semibold text-white mt-1">{img.title || "Clinic Showcase"}</h4>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </StaggerItem>
                 ))}
-              </div>
+              </StaggerContainer>
             )}
           </Container>
         </Section>
