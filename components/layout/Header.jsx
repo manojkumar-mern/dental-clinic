@@ -2,9 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Stethoscope } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import { API_BASE_URL } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Container } from "./Container";
@@ -20,7 +22,7 @@ export function Header() {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/content/settings");
+        const res = await fetch(`${API_BASE_URL}/content/settings`);
         const data = await res.json();
         if (res.ok && data.success) {
           setSettings(data.data);
@@ -85,10 +87,10 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border bg-background/85 backdrop-blur-md transition-all">
       <Container>
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-24 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 font-heading font-semibold text-lg text-primary tracking-tight">
-            <Stethoscope className="size-6 text-primary" strokeWidth={2.5} />
+          <Link href="/" className="flex items-center gap-4 font-heading font-extrabold text-3xl text-primary tracking-tight">
+            <Image src="/logo.svg" alt="Aura Dental Logo" width={68} height={68} priority className="object-contain" />
             <span className="uppercase">{clinicName}</span>
           </Link>
 

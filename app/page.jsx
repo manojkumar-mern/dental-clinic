@@ -516,8 +516,8 @@ export default function Home() {
                 ★ Board Certified Dental Care
               </StaggerItem>
               <StaggerItem>
-                <h1 className="text-4xl sm:text-5xl md:text-6xl font-heading font-semibold text-foreground tracking-tight leading-[1.1] max-w-xl">
-                  Elevate Your Smile, <span className="text-primary">Empower Your Health</span>
+                <h1 className="text-4xl sm:text-5xl md:text-6xl font-heading font-semibold text-foreground tracking-tight leading-[1.08] max-w-xl">
+                  Elevate Your <span className="text-primary relative inline-block">Smile<span className="absolute bottom-1 left-0 w-full h-1 bg-[#84cc16] rounded-full opacity-60"></span></span>,<br />Empower Your <span className="text-secondary">Health</span>
                 </h1>
               </StaggerItem>
               <StaggerItem>
@@ -584,8 +584,13 @@ export default function Home() {
       <Section id="how-can-we-help" size="md" className="bg-white border-b border-border/30 relative z-10">
         <Container>
           <FadeUp className="text-center max-w-lg mx-auto mb-8">
-            <h2 className="text-2xl font-heading font-semibold text-foreground tracking-tight">How Can We Help You?</h2>
-            <p className="text-sm text-muted-foreground font-light mt-1.5">Choose a category to find the right treatment for your smile.</p>
+            <span className="text-xs font-bold tracking-widest text-primary uppercase bg-light-green/50 px-3 py-1 rounded-full">
+              Treatment Categories
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-heading font-semibold text-foreground tracking-tight mt-3">
+              How Can We <span className="text-primary">Help You?</span>
+            </h2>
+            <p className="text-sm text-muted-foreground font-light mt-2">Choose a category to find the right treatment for your smile.</p>
           </FadeUp>
 
           <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -633,8 +638,8 @@ export default function Home() {
 
             {/* Right Tabs */}
             <FadeUp className="lg:col-span-7 flex flex-col items-start">
-              <span className="text-xs font-bold tracking-widest text-primary uppercase mb-2">Our Clinical Standards</span>
-              <h2 className="text-2xl sm:text-3xl font-heading font-semibold text-foreground tracking-tight mb-6">Why Trust {settings?.clinicName || "Aura Dental"}</h2>
+              <span className="text-xs font-bold tracking-widest text-primary uppercase bg-light-green/50 px-3 py-1 rounded-full mb-3">Our Clinical Standards</span>
+              <h2 className="text-3xl sm:text-4xl font-heading font-semibold text-foreground tracking-tight mt-3 mb-6">Why Trust <span className="text-primary">{settings?.clinicName || "Aura Dental"}</span></h2>
               
               <div className="flex flex-wrap gap-1.5 border-b border-border w-full pb-3 mb-6">
                 {trustTabs.map((tab, idx) => (
@@ -671,13 +676,13 @@ export default function Home() {
       <section ref={servicesSectionRef} className="relative bg-white lg:py-24 py-16 border-b border-border/30">
         <div className="w-full flex flex-col relative">
           <FadeUp className="mb-6 lg:mb-10 px-4 md:px-8 lg:px-[10vw] shrink-0 text-left">
-            <span className="text-xs font-bold tracking-widest text-primary bg-light-green/75 px-3 py-1 rounded-full uppercase">
+            <span className="text-xs font-bold tracking-widest text-primary bg-light-green/50 px-3 py-1 rounded-full uppercase">
               Featured Specialties
             </span>
-            <h2 className="text-2xl lg:text-4xl font-heading font-semibold text-slate-900 tracking-tight mt-2.5">
-              Featured Services
+            <h2 className="text-3xl sm:text-4xl font-heading font-semibold text-foreground tracking-tight mt-3">
+              Featured <span className="text-primary">Services</span>
             </h2>
-            <p className="text-sm text-slate-500 font-light mt-1.5 max-w-md">
+            <p className="text-sm text-muted-foreground font-light mt-2 max-w-md">
               Explore our most popular treatments. Scroll to explore.
             </p>
           </FadeUp>

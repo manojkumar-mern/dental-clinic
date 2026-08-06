@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { API_BASE_URL } from "@/lib/api";
 import {
-  Stethoscope,
   Clock,
   MapPin,
   Phone,
@@ -26,7 +27,7 @@ export function Footer() {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/content/settings");
+        const res = await fetch(`${API_BASE_URL}/content/settings`);
         const data = await res.json();
         if (res.ok && data.success) {
           setSettings(data.data);
@@ -117,9 +118,9 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10">
           {/* Brand */}
           <div className="lg:col-span-3 flex flex-col gap-5">
-            <Link href="/" className="flex items-center gap-2 font-heading font-semibold text-lg text-white tracking-tight group">
-              <span className="flex items-center justify-center size-9 rounded-lg bg-[#84cc16]/15 border border-[#84cc16]/25 transition-all duration-300 group-hover:bg-[#84cc16] group-hover:border-[#84cc16]">
-                <Stethoscope className="size-5 text-[#84cc16] transition-colors duration-300 group-hover:text-white" strokeWidth={2.5} />
+            <Link href="/" className="flex items-center gap-3 font-heading font-semibold text-lg text-white tracking-tight group">
+              <span className="flex items-center justify-center size-11 rounded-xl bg-[#84cc16]/15 border border-[#84cc16]/25 transition-all duration-300 group-hover:bg-[#84cc16] group-hover:border-[#84cc16]">
+                <Image src="/logo.svg" alt="Aura Dental Logo" width={28} height={28} className="object-contain" />
               </span>
               <span className="uppercase">{clinicName}</span>
             </Link>

@@ -160,7 +160,9 @@ export default function PatientCareDetailPage() {
           <FadeUp className="max-w-3xl mx-auto px-4 md:px-6 w-full">
             <div className="text-center mb-12">
               <HelpCircle className="size-10 text-primary mx-auto mb-3" />
-              <h1 className="text-3xl font-heading font-semibold text-foreground tracking-tight">Frequently Asked Questions</h1>
+              <h1 className="text-3xl font-heading font-semibold text-foreground tracking-tight leading-[1.08]">
+                Frequently Asked <span className="text-primary relative inline-block">Questions<span className="absolute bottom-1 left-0 w-full h-1 bg-[#84cc16] rounded-full opacity-60"></span></span>
+              </h1>
               <p className="text-sm text-muted-foreground mt-2">Find quick answers about our procedures, bookings, and policies.</p>
             </div>
 
@@ -210,7 +212,9 @@ export default function PatientCareDetailPage() {
           <Container>
             <FadeUp className="text-center mb-12">
               <Star className="size-10 text-primary mx-auto mb-3 fill-primary/10" />
-              <h1 className="text-3xl font-heading font-semibold text-foreground tracking-tight">Patient Testimonials</h1>
+              <h1 className="text-3xl font-heading font-semibold text-foreground tracking-tight leading-[1.08]">
+                Patient <span className="text-primary relative inline-block">Testimonials<span className="absolute bottom-1 left-0 w-full h-1 bg-[#84cc16] rounded-full opacity-60"></span></span>
+              </h1>
               <p className="text-sm text-muted-foreground mt-2">Real feedback from patients who completed treatments at Aura Dental.</p>
             </FadeUp>
 
@@ -272,8 +276,8 @@ export default function PatientCareDetailPage() {
         {/* Hero Section */}
         <Section size="md" className="bg-white border-b border-border/30">
           <FadeUp className="max-w-4xl text-center mx-auto px-4 w-full">
-            <h1 className="text-3xl sm:text-4xl font-heading font-semibold text-foreground tracking-tight leading-[1.1]">
-              Affordable Dental Care Made Easy
+            <h1 className="text-3xl sm:text-4xl font-heading font-semibold text-foreground tracking-tight leading-[1.08]">
+              Affordable <span className="text-primary relative inline-block">Dental Care<span className="absolute bottom-1 left-0 w-full h-1 bg-[#84cc16] rounded-full opacity-60"></span></span> Made Easy
             </h1>
             <p className="mt-4 text-sm text-muted-foreground font-light max-w-2xl mx-auto leading-relaxed">
               At Aura Dental, we make advanced dental treatments easier to begin with EMI and insurance support through trusted RBI-approved banking and finance partners.
@@ -373,7 +377,9 @@ export default function PatientCareDetailPage() {
         <Section size="md" className="bg-white">
           <Container>
             <FadeUp className="text-center mb-12">
-              <h1 className="text-3xl font-heading font-semibold text-foreground tracking-tight">Dental Insights by Aura Dental</h1>
+              <h1 className="text-3xl font-heading font-semibold text-foreground tracking-tight leading-[1.08]">
+                Dental <span className="text-primary relative inline-block">Insights<span className="absolute bottom-1 left-0 w-full h-1 bg-[#84cc16] rounded-full opacity-60"></span></span> by Aura Dental
+              </h1>
               <p className="text-sm text-muted-foreground mt-2">Read clinical health articles written directly by our doctors.</p>
             </FadeUp>
 
@@ -415,7 +421,9 @@ export default function PatientCareDetailPage() {
         <Section size="md" className="bg-white">
           <Container>
             <FadeUp className="text-center mb-12">
-              <h1 className="text-3xl font-heading font-semibold text-foreground tracking-tight">Smile Gallery</h1>
+              <h1 className="text-3xl font-heading font-semibold text-foreground tracking-tight leading-[1.08]">
+                Smile <span className="text-primary relative inline-block">Gallery<span className="absolute bottom-1 left-0 w-full h-1 bg-[#84cc16] rounded-full opacity-60"></span></span>
+              </h1>
               <p className="text-sm text-muted-foreground mt-2">Clinical results and smiles achieved at {settings?.clinicName || "Aura Dental"}.</p>
             </FadeUp>
 

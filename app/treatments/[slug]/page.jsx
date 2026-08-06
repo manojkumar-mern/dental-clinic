@@ -75,11 +75,11 @@ export default function TreatmentDetailPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             {/* Left */}
             <StaggerContainer className="lg:col-span-7 text-left flex flex-col items-start">
-              <StaggerItem className="text-[10px] font-bold tracking-widest text-primary bg-light-green/75 px-3 py-1 rounded-full uppercase mb-4">
+              <StaggerItem className="text-[10px] font-bold tracking-widest text-primary bg-light-green/50 px-3 py-1 rounded-full uppercase mb-4">
                 ★ Clinical Pathway
               </StaggerItem>
               <StaggerItem>
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-heading font-semibold text-foreground tracking-tight leading-[1.1] max-w-xl">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-heading font-semibold text-foreground tracking-tight leading-[1.08] max-w-xl">
                   {data.tagline}
                 </h1>
               </StaggerItem>

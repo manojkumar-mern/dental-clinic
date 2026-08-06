@@ -35,11 +35,11 @@ export default function ServicesPage() {
       <Section size="md" className="pt-12 pb-10 bg-white bg-grid-pattern border-b border-border/40">
         <Container>
           <div className="text-center max-w-2xl mx-auto">
-            <span className="text-xs font-bold tracking-widest text-primary bg-light-green/75 px-3 py-1 rounded-full uppercase">
+            <span className="text-xs font-bold tracking-widest text-primary bg-light-green/50 px-3 py-1 rounded-full uppercase">
               Complete Care Catalog
             </span>
             <h1 className="text-3xl sm:text-4xl font-heading font-semibold text-foreground tracking-tight mt-4">
-              All Our Dental Services
+              All Our <span className="text-primary relative inline-block">Dental Services<span className="absolute bottom-1 left-0 w-full h-1 bg-[#84cc16] rounded-full opacity-60"></span></span>
             </h1>
             <p className="text-sm text-muted-foreground font-light mt-2 leading-relaxed">
               Explore every treatment we offer. Book a consultation and our care coordinator will match you with the right clinical pathway.

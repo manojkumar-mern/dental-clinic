@@ -1,81 +1,30 @@
 const express = require("express");
 const router = express.Router();
-const { body, validationResult } = require("express-validator");
 const {
   getAppointments,
   getAppointmentById,
   createAppointment,
   updateAppointment,
   updateAppointmentStatus,
-  deleteAppointment,
+  getDoctorAvailableSlots,
 } = require("../controllers/appointmentController");
-const { protectAdmin, optionalProtectAdmin } = require("../middleware/adminMiddleware");
+const { protect, authorizeRoles } = require("../middleware/authMiddleware");
 
-// Common validator error interceptor
-const validate = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    res.status(400);
-    return next(new Error(errors.array().map((err) => err.msg).join(", ")));
-  }
-  next();
-};
+// Doctor availability endpoint is public so patients can schedule appointments on the public site
+router.get("/doctor/:doctorId/available", getDoctorAvailableSlots);
 
-const apptValidationRules = [
-  body("name")
-    .trim()
-    .notEmpty()
-    .withMessage("Patient name is required")
-    .isLength({ max: 100 })
-    .withMessage("Name cannot exceed 100 characters"),
-  body("phone")
-    .trim()
-    .notEmpty()
-    .withMessage("Mobile phone number is required")
-    .matches(/^\+?[1-9]\d{1,14}$/)
-    .withMessage("Please enter a valid mobile number"),
-  body("email")
-    .optional({ checkFalsy: true })
-    .trim()
-    .isEmail()
-    .withMessage("Please enter a valid email address")
-    .normalizeEmail(),
-  body("service")
-    .trim()
-    .notEmpty()
-    .withMessage("Service is required")
-    .isMongoId()
-    .withMessage("Please select a valid service"),
-  body("preferredDate")
-    .trim()
-    .notEmpty()
-    .withMessage("Preferred date is required")
-    .isISO8601()
-    .withMessage("Please select a valid date (YYYY-MM-DD)"),
-  body("preferredTime")
-    .trim()
-    .notEmpty()
-    .withMessage("Preferred time slot is required"),
-  body("reasonForVisit")
-    .optional()
-    .trim(),
-  validate,
-];
-
-// 1. Create Appointment - Public (optionally checks if admin is booking)
-router.post("/", optionalProtectAdmin, apptValidationRules, createAppointment);
-
-// 2. Protected admin routes
-router.use(protectAdmin);
+// Protected routes (staff dashboard functions)
+router.use(protect);
 
 router.route("/")
-  .get(getAppointments);
+  .get(authorizeRoles("admin", "doctor", "receptionist"), getAppointments)
+  .post(authorizeRoles("admin", "doctor", "receptionist"), createAppointment);
 
 router.route("/:id")
-  .get(getAppointmentById)
-  .put(updateAppointment)
-  .delete(deleteAppointment);
+  .get(authorizeRoles("admin", "doctor", "receptionist"), getAppointmentById)
+  .put(authorizeRoles("admin", "doctor", "receptionist"), updateAppointment);
 
-router.patch("/:id/status", updateAppointmentStatus);
+router.put("/:id/status", authorizeRoles("admin", "doctor", "receptionist"), updateAppointmentStatus);
 
 module.exports = router;
+

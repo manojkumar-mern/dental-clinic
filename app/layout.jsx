@@ -4,6 +4,7 @@ import { ToastProvider } from "@/components/ui/toast";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Preloader } from "@/components/shared/Preloader";
+import { ScrollIndicator } from "@/components/shared/ScrollIndicator";
 import "./globals.css";
 
 const inter = Inter({
@@ -32,6 +33,7 @@ export default function RootLayout({ children }) {
             <Header />
             <main className="flex-1 flex flex-col">{children}</main>
             <Footer />
+            <ScrollIndicator />
           </Preloader>
         </ToastProvider>
       </body>
