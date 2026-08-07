@@ -80,8 +80,8 @@ export function Header() {
     { label: "About Us", href: "/about" },
     { label: "Treatments", href: "/#treatments", isDropdown: true },
     { label: "Patient Care", href: "/#patient-care", isDropdown: true },
-    { label: "Why Trust Us", href: "/#why-trust-us" },
-    { label: "Our Doctor", href: "/#meet-doctor" },
+    { label: "Blog", href: "/blog" },
+    { label: "Our Doctors", href: "/doctors" },
   ];
 
   return (
@@ -105,14 +105,18 @@ export function Header() {
                   <div key={link.href} className="relative group py-4">
                     <span
                       className={cn(
-                        "text-sm font-medium cursor-pointer transition-colors hover:text-primary flex items-center gap-1",
+                        "text-sm font-medium cursor-pointer transition-colors hover:text-primary flex items-center gap-1 relative py-1",
                         isActive ? "text-primary font-semibold" : "text-muted-foreground"
                       )}
                     >
-                      {link.label}
+                      <span>{link.label}</span>
                       <svg className="size-3 text-muted-foreground group-hover:text-primary transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                       </svg>
+                      <span className={cn(
+                        "absolute left-0 -bottom-0.5 h-0.5 w-full bg-primary origin-left transition-transform duration-300",
+                        isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                      )} />
                     </span>
 
                     {/* Dropdown container */}
@@ -127,9 +131,12 @@ export function Header() {
                                   <Link
                                     key={iIdx}
                                     href={`/treatments/${item.slug}`}
-                                    className="text-xs text-slate-600 hover:text-primary hover:bg-light-green/45 transition-all px-3 py-1.5 rounded-lg font-medium block transform hover:translate-x-1 duration-200"
+                                    className="text-xs text-slate-600 hover:text-primary hover:bg-light-green/45 transition-all px-3 py-1.5 rounded-lg font-medium block transform hover:translate-x-1 duration-200 relative group/sub"
                                   >
-                                    {item.name}
+                                    <span className="relative">
+                                      {item.name}
+                                      <span className="absolute left-0 -bottom-0.5 h-0.5 w-full bg-primary origin-left scale-x-0 group-hover/sub:scale-x-100 transition-transform duration-300" />
+                                    </span>
                                   </Link>
                                 ))}
                               </div>
@@ -142,9 +149,12 @@ export function Header() {
                             <Link
                               key={idx}
                               href={`/patient-care/${item.slug}`}
-                              className="text-xs text-slate-600 hover:text-primary hover:bg-light-green/45 transition-all px-3 py-2 rounded-lg font-medium block transform hover:translate-x-1 duration-200"
+                              className="text-xs text-slate-600 hover:text-primary hover:bg-light-green/45 transition-all px-3 py-2 rounded-lg font-medium block transform hover:translate-x-1 duration-200 relative group/sub"
                             >
-                              {item.name}
+                              <span className="relative">
+                                {item.name}
+                                <span className="absolute left-0 -bottom-0.5 h-0.5 w-full bg-primary origin-left scale-x-0 group-hover/sub:scale-x-100 transition-transform duration-300" />
+                              </span>
                             </Link>
                           ))}
                         </div>
@@ -162,11 +172,15 @@ export function Header() {
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "text-sm font-medium transition-colors hover:text-primary",
+                    "text-sm font-medium transition-colors hover:text-primary relative py-1 group",
                     isActive ? "text-primary font-semibold" : "text-muted-foreground"
                   )}
                 >
-                  {link.label}
+                  <span>{link.label}</span>
+                  <span className={cn(
+                    "absolute left-0 -bottom-0.5 h-0.5 w-full bg-primary origin-left transition-transform duration-300",
+                    isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                  )} />
                 </LinkComponent>
               );
             })}

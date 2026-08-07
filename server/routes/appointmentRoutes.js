@@ -13,12 +13,14 @@ const { protect, authorizeRoles } = require("../middleware/authMiddleware");
 // Doctor availability endpoint is public so patients can schedule appointments on the public site
 router.get("/doctor/:doctorId/available", getDoctorAvailableSlots);
 
+// Public endpoint to book an appointment
+router.post("/", createAppointment);
+
 // Protected routes (staff dashboard functions)
 router.use(protect);
 
 router.route("/")
-  .get(authorizeRoles("admin", "doctor", "receptionist"), getAppointments)
-  .post(authorizeRoles("admin", "doctor", "receptionist"), createAppointment);
+  .get(authorizeRoles("admin", "doctor", "receptionist"), getAppointments);
 
 router.route("/:id")
   .get(authorizeRoles("admin", "doctor", "receptionist"), getAppointmentById)

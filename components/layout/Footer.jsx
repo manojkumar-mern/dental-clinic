@@ -58,7 +58,7 @@ export function Footer() {
   const quickLinks = [
     { label: "Home", href: "/" },
     { label: "About Us", href: "/about" },
-    { label: "Why Trust Us", href: "/#why-trust-us" },
+    { label: "Blog", href: "/blog" },
     { label: "Patient Care", href: "/#patient-care" },
     { label: "Book Appointment", href: "/#book" },
   ];
