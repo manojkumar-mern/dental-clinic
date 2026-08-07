@@ -11,6 +11,7 @@ export function ScrollIndicator() {
 
   const [showScrollUp, setShowScrollUp] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [activeSection, setActiveSection] = useState("hero");
   const lastScrollY = useRef(0);
 
   useEffect(() => {
@@ -33,13 +34,71 @@ export function ScrollIndicator() {
         setShowScrollUp(false);
       }
       lastScrollY.current = currentScrollY;
+
+      // Active Section Detection
+      if (pathname === "/about") {
+        const heroEl = document.getElementById("about-hero");
+        const journeyEl = document.getElementById("about-journey");
+        const detailsEl = document.getElementById("about-details");
+
+        if (heroEl && journeyEl && detailsEl) {
+          const scrollPosition = currentScrollY + 300;
+          if (scrollPosition >= detailsEl.offsetTop) {
+            setActiveSection("details");
+          } else if (scrollPosition >= journeyEl.offsetTop) {
+            setActiveSection("journey");
+          } else {
+            setActiveSection("hero");
+          }
+        }
+      } else {
+        // Generic active section detection based on scroll percentage
+        if (progress > 66) {
+          setActiveSection("bottom");
+        } else if (progress > 33) {
+          setActiveSection("middle");
+        } else {
+          setActiveSection("top");
+        }
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [pathname]);
 
   if (isAdmin) return null;
+
+  // Configure dot items depending on path
+  const dots = pathname === "/about" 
+    ? [
+        { id: "about-hero", label: "About Us", key: "hero" },
+        { id: "about-journey", label: "Our Journey", key: "journey" },
+        { id: "about-details", label: "Clinic Details", key: "details" },
+      ]
+    : [
+        { percentage: 0, label: "Top", key: "top" },
+        { percentage: 50, label: "Middle", key: "middle" },
+        { percentage: 100, label: "Bottom", key: "bottom" },
+      ];
+
+  const handleDotClick = (dot) => {
+    if (dot.id) {
+      const el = document.getElementById(dot.id);
+      if (el) {
+        window.scrollTo({
+          top: el.offsetTop - 80,
+          behavior: "smooth"
+        });
+      }
+    } else if (typeof dot.percentage === "number") {
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      window.scrollTo({
+        top: (totalHeight * dot.percentage) / 100,
+        behavior: "smooth"
+      });
+    }
+  };
 
   return (
     <div 
@@ -54,6 +113,21 @@ export function ScrollIndicator() {
           className="absolute top-0 left-0 w-full bg-primary rounded-full transition-all duration-100"
           style={{ height: `${scrollProgress}%` }}
         />
+      </div>
+
+      {/* Section Bullet Indicators */}
+      <div className="flex flex-col gap-3 py-2 px-1.5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-border/50 rounded-full shadow-lg">
+        {dots.map((dot) => (
+          <button 
+            key={dot.key}
+            onClick={() => handleDotClick(dot)}
+            title={dot.label}
+            className={cn(
+              "size-2.5 rounded-full transition-all cursor-pointer",
+              activeSection === dot.key ? "bg-primary scale-125" : "bg-slate-300 dark:bg-slate-600 hover:bg-primary/50"
+            )}
+          />
+        ))}
       </div>
 
       {/* Dynamic Scroll Up Button */}

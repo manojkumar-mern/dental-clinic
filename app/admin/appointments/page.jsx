@@ -217,80 +217,19 @@ export default function AdminAppointmentsPage() {
 
   if (!admin) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#070b15] text-slate-400">
+      <div className="min-h-screen flex items-center justify-center bg-[#070b15] text-slate-600 dark:text-slate-400">
         <p>Loading secure session...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-[#070b15]">
-      {/* Side Navigation Bar */}
-      <aside className="w-full md:w-64 bg-[#0a0f1d] border-b md:border-b-0 md:border-r border-white/[0.05] p-6 flex flex-col justify-between shrink-0">
-        <div>
-          <div className="flex items-center gap-3 mb-8">
-            <div className="size-8 rounded-lg bg-gradient-to-tr from-sky-400 to-blue-600 flex items-center justify-center text-white font-bold text-sm">
-              A
-            </div>
-            <span className="font-semibold text-white tracking-wider uppercase text-sm">Aura Dental</span>
-          </div>
-
-          <nav className="space-y-1">
-            <Link
-              href="/admin/dashboard"
-              className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.02] text-sm font-medium transition-all"
-            >
-              Dashboard
-            </Link>
-            <Link
-              href="/admin/appointments"
-              className="flex items-center gap-3 px-4 py-2.5 rounded-lg bg-sky-500/10 text-sky-400 text-sm font-medium transition-all"
-            >
-              Appointments
-            </Link>
-            <Link
-              href="/admin/patients"
-              className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.02] text-sm font-medium transition-all"
-            >
-              Patients
-            </Link>
-            <Link
-              href="/admin/services"
-              className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.02] text-sm font-medium transition-all"
-            >
-              Services
-            </Link>
-            <Link
-              href="/admin/messages"
-              className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.02] text-sm font-medium transition-all"
-            >
-              Messages
-            </Link>
-            <Link
-              href="/admin/settings"
-              className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.02] text-sm font-medium transition-all"
-            >
-              Settings
-            </Link>
-          </nav>
-        </div>
-
-        <div className="pt-6 border-t border-white/[0.05] mt-6">
-          <Button
-            onClick={handleLogout}
-            variant="outline"
-            className="w-full text-xs font-semibold uppercase tracking-wider text-slate-400 hover:text-white border-white/[0.08]"
-          >
-            Log Out
-          </Button>
-        </div>
-      </aside>
-
-      {/* Main Content Area */}
-      <main className="flex-1 p-8 md:p-12 overflow-y-auto">
-        <header className="pb-6 border-b border-white/[0.05] mb-8">
-          <h1 className="text-3xl font-bold tracking-tight text-white">Appointments Management</h1>
-          <p className="text-slate-400 mt-1">Review, reschedule, confirm and cancel patient consultations.</p>
+    <div className="w-full">
+      
+      <div className="w-full">
+        <header className="pb-6 border-b border-slate-200 dark:border-white/[0.05] mb-8">
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Appointments Management</h1>
+          <p className="text-slate-600 dark:text-slate-400 mt-1">Review, reschedule, confirm and cancel patient consultations.</p>
         </header>
 
         {/* Filters Panel */}
@@ -302,7 +241,7 @@ export default function AdminAppointmentsPage() {
               setSearch(e.target.value);
               setPage(1);
             }}
-            className="bg-white/[0.02] border-white/[0.08] text-white"
+            className="bg-white dark:bg-white/[0.02] border-slate-300 dark:border-white/[0.08] text-slate-900 dark:text-white"
           />
 
           <select
@@ -311,13 +250,13 @@ export default function AdminAppointmentsPage() {
               setStatusFilter(e.target.value);
               setPage(1);
             }}
-            className="rounded-lg border border-white/[0.08] bg-white/[0.02] px-4 text-sm transition-all focus-visible:border-sky-500 focus-visible:ring-2 focus-visible:ring-sky-500/15 outline-none text-white h-[46px]"
+            className="rounded-lg border border-slate-300 dark:border-white/[0.08] bg-white dark:bg-white/[0.02] px-4 text-sm transition-all focus-visible:border-sky-500 focus-visible:ring-2 focus-visible:ring-sky-500/15 outline-none text-slate-900 dark:text-white h-[46px]"
           >
-            <option value="" className="bg-[#070b15] text-white">All Statuses</option>
-            <option value="Pending" className="bg-[#070b15] text-white">Pending</option>
-            <option value="Confirmed" className="bg-[#070b15] text-white">Confirmed</option>
-            <option value="Completed" className="bg-[#070b15] text-white">Completed</option>
-            <option value="Cancelled" className="bg-[#070b15] text-white">Cancelled</option>
+            <option value="" className="bg-[#070b15] text-slate-900 dark:text-white">All Statuses</option>
+            <option value="Pending" className="bg-[#070b15] text-slate-900 dark:text-white">Pending</option>
+            <option value="Confirmed" className="bg-[#070b15] text-slate-900 dark:text-white">Confirmed</option>
+            <option value="Completed" className="bg-[#070b15] text-slate-900 dark:text-white">Completed</option>
+            <option value="Cancelled" className="bg-[#070b15] text-slate-900 dark:text-white">Cancelled</option>
           </select>
 
           <Input
@@ -327,16 +266,16 @@ export default function AdminAppointmentsPage() {
               setDateFilter(e.target.value);
               setPage(1);
             }}
-            className="bg-white/[0.02] border-white/[0.08] text-white h-[46px]"
+            className="bg-white dark:bg-white/[0.02] border-slate-300 dark:border-white/[0.08] text-slate-900 dark:text-white h-[46px]"
           />
         </div>
 
         {/* Appointments Table */}
-        <div className="bg-white/[0.02] border border-white/[0.05] rounded-xl overflow-hidden shadow-sm">
+        <div className="bg-white dark:bg-white/[0.02] border border-slate-200 dark:border-white/[0.05] rounded-xl overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-sm">
               <thead>
-                <tr className="border-b border-white/[0.05] bg-white/[0.01] text-slate-400 font-semibold">
+                <tr className="border-b border-slate-200 dark:border-white/[0.05] bg-white dark:bg-white/[0.01] text-slate-600 dark:text-slate-400 font-semibold">
                   <th className="p-4">Appt ID</th>
                   <th className="p-4">Patient Name</th>
                   <th className="p-4">Mobile</th>
@@ -347,16 +286,16 @@ export default function AdminAppointmentsPage() {
                   <th className="p-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/[0.05] text-slate-300">
+              <tbody className="divide-y divide-white/[0.05] text-slate-700 dark:text-slate-300">
                 {loading ? (
                   <tr>
-                    <td colSpan="8" className="p-8 text-center text-slate-500">
+                    <td colSpan="8" className="p-8 text-center text-slate-500 dark:text-slate-500">
                       Loading appointments list...
                     </td>
                   </tr>
                 ) : appointments.length === 0 ? (
                   <tr>
-                    <td colSpan="8" className="p-8 text-center text-slate-500">
+                    <td colSpan="8" className="p-8 text-center text-slate-500 dark:text-slate-500">
                       No appointments found matching parameters.
                     </td>
                   </tr>
@@ -364,19 +303,19 @@ export default function AdminAppointmentsPage() {
                   appointments.map((appt) => (
                     <tr key={appt._id} className="hover:bg-white/[0.01] transition-all">
                       <td className="p-4 font-semibold text-sky-400">{appt.appointmentId}</td>
-                      <td className="p-4 font-semibold text-white">
+                      <td className="p-4 font-semibold text-slate-900 dark:text-white">
                         {appt.patient ? appt.patient.name : "Unknown"}
                       </td>
-                      <td className="p-4 text-slate-400">
+                      <td className="p-4 text-slate-600 dark:text-slate-400">
                         {appt.patient ? appt.patient.phone : "Unknown"}
                       </td>
-                      <td className="p-4 text-slate-400">
+                      <td className="p-4 text-slate-600 dark:text-slate-400">
                         {appt.service ? appt.service.title : "Unknown"}
                       </td>
-                      <td className="p-4 text-white">
+                      <td className="p-4 text-slate-900 dark:text-white">
                         {new Date(appt.preferredDate).toLocaleDateString()}
                       </td>
-                      <td className="p-4 text-slate-400">{appt.preferredTime}</td>
+                      <td className="p-4 text-slate-600 dark:text-slate-400">{appt.preferredTime}</td>
                       <td className="p-4">
                         <span
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
@@ -397,7 +336,7 @@ export default function AdminAppointmentsPage() {
                           onClick={() => openDetailsModal(appt)}
                           variant="outline"
                           size="sm"
-                          className="text-xs border-white/[0.08] hover:bg-white/[0.02]"
+                          className="text-xs border-slate-300 dark:border-white/[0.08] hover:bg-white/[0.02]"
                         >
                           View Details
                         </Button>
@@ -411,17 +350,17 @@ export default function AdminAppointmentsPage() {
 
           {/* Pagination Controls */}
           {totalPages > 1 && (
-            <div className="p-4 border-t border-white/[0.05] flex justify-between items-center bg-white/[0.01]">
+            <div className="p-4 border-t border-slate-200 dark:border-white/[0.05] flex justify-between items-center bg-white dark:bg-white/[0.01]">
               <Button
                 disabled={page <= 1}
                 onClick={() => setPage((p) => Math.max(p - 1, 1))}
                 variant="outline"
                 size="sm"
-                className="text-xs border-white/[0.08]"
+                className="text-xs border-slate-300 dark:border-white/[0.08]"
               >
                 Previous
               </Button>
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-slate-500 dark:text-slate-500">
                 Page {page} of {totalPages}
               </span>
               <Button
@@ -429,21 +368,21 @@ export default function AdminAppointmentsPage() {
                 onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
                 variant="outline"
                 size="sm"
-                className="text-xs border-white/[0.08]"
+                className="text-xs border-slate-300 dark:border-white/[0.08]"
               >
                 Next
               </Button>
             </div>
           )}
         </div>
-      </main>
+      </div>
 
       {/* Appointment Detail & Management Modal */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title={selectedAppt ? `Manage Appointment: ${selectedAppt.appointmentId}` : ""}
-        className="bg-[#0a0f1d] border-white/[0.08] text-white"
+        className="bg-[#0a0f1d] border-slate-300 dark:border-white/[0.08] text-slate-900 dark:text-white"
         size="lg"
       >
         {selectedAppt && (
@@ -461,21 +400,21 @@ export default function AdminAppointmentsPage() {
             )}
 
             {/* Status indicators */}
-            <div className="flex flex-wrap gap-2 items-center pb-4 border-b border-white/[0.05]">
-              <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">
+            <div className="flex flex-wrap gap-2 items-center pb-4 border-b border-slate-200 dark:border-white/[0.05]">
+              <span className="text-slate-600 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">
                 Status Transitions:
               </span>
               <Button
                 disabled={actionLoading || selectedAppt.status === "Confirmed"}
                 onClick={() => handleStatusChange("Confirmed")}
-                className="py-1 px-3 bg-emerald-600 hover:bg-emerald-500 text-white text-xs rounded-md font-semibold"
+                className="py-1 px-3 bg-emerald-600 hover:bg-emerald-500 text-slate-900 dark:text-white text-xs rounded-md font-semibold"
               >
                 Confirm
               </Button>
               <Button
                 disabled={actionLoading || selectedAppt.status === "Completed"}
                 onClick={() => handleStatusChange("Completed")}
-                className="py-1 px-3 bg-sky-600 hover:bg-sky-500 text-white text-xs rounded-md font-semibold"
+                className="py-1 px-3 bg-sky-600 hover:bg-sky-500 text-slate-900 dark:text-white text-xs rounded-md font-semibold"
               >
                 Complete
               </Button>
@@ -489,36 +428,36 @@ export default function AdminAppointmentsPage() {
             </div>
 
             {/* Basic Info */}
-            <div className="grid grid-cols-2 gap-4 text-sm text-slate-300">
+            <div className="grid grid-cols-2 gap-4 text-sm text-slate-700 dark:text-slate-300">
               <div>
-                <span className="text-slate-500 font-medium block">Patient:</span>
-                <span className="text-white font-semibold">
+                <span className="text-slate-500 dark:text-slate-500 font-medium block">Patient:</span>
+                <span className="text-slate-900 dark:text-white font-semibold">
                   {selectedAppt.patient ? selectedAppt.patient.name : "Unknown"}
                 </span>
               </div>
               <div>
-                <span className="text-slate-500 font-medium block">Mobile Phone:</span>
-                <span className="text-white">
+                <span className="text-slate-500 dark:text-slate-500 font-medium block">Mobile Phone:</span>
+                <span className="text-slate-900 dark:text-white">
                   {selectedAppt.patient ? selectedAppt.patient.phone : "Unknown"}
                 </span>
               </div>
               <div>
-                <span className="text-slate-500 font-medium block">Care Service:</span>
-                <span className="text-white font-semibold">
+                <span className="text-slate-500 dark:text-slate-500 font-medium block">Care Service:</span>
+                <span className="text-slate-900 dark:text-white font-semibold">
                   {selectedAppt.service ? selectedAppt.service.title : "Unknown"}
                 </span>
               </div>
               <div>
-                <span className="text-slate-500 font-medium block">Reason for Visit:</span>
-                <span className="text-white italic">
+                <span className="text-slate-500 dark:text-slate-500 font-medium block">Reason for Visit:</span>
+                <span className="text-slate-900 dark:text-white italic">
                   {selectedAppt.reasonForVisit || "Not specified"}
                 </span>
               </div>
             </div>
 
             {/* Reschedule Form */}
-            <form onSubmit={handleRescheduleAndNotes} className="space-y-4 pt-4 border-t border-white/[0.05]">
-              <h3 className="text-base font-semibold text-white">Reschedule & Notes</h3>
+            <form onSubmit={handleRescheduleAndNotes} className="space-y-4 pt-4 border-t border-slate-200 dark:border-white/[0.05]">
+              <h3 className="text-base font-semibold text-slate-900 dark:text-white">Reschedule & Notes</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Input
@@ -527,27 +466,27 @@ export default function AdminAppointmentsPage() {
                     value={preferredDate}
                     onChange={(e) => setPreferredDate(e.target.value)}
                     required
-                    className="bg-white/[0.02] border-white/[0.1] text-white"
+                    className="bg-white dark:bg-white/[0.02] border-slate-300 dark:border-white/[0.1] text-slate-900 dark:text-white"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-400 block mb-1.5">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 block mb-1.5">
                     Preferred Time Slot
                   </label>
                   <select
                     value={preferredTime}
                     onChange={(e) => setPreferredTime(e.target.value)}
                     required
-                    className="w-full rounded-lg border border-white/[0.1] bg-white/[0.02] px-4 py-3 text-sm transition-all focus-visible:border-sky-500 focus-visible:ring-2 focus-visible:ring-sky-500/15 outline-none text-white h-[46px]"
+                    className="w-full rounded-lg border border-slate-300 dark:border-white/[0.1] bg-white dark:bg-white/[0.02] px-4 py-3 text-sm transition-all focus-visible:border-sky-500 focus-visible:ring-2 focus-visible:ring-sky-500/15 outline-none text-slate-900 dark:text-white h-[46px]"
                   >
-                    <option value="09:00 AM" className="bg-[#0a0f1d] text-white">09:00 AM</option>
-                    <option value="10:00 AM" className="bg-[#0a0f1d] text-white">10:00 AM</option>
-                    <option value="11:00 AM" className="bg-[#0a0f1d] text-white">11:00 AM</option>
-                    <option value="12:00 PM" className="bg-[#0a0f1d] text-white">12:00 PM</option>
-                    <option value="02:00 PM" className="bg-[#0a0f1d] text-white">02:00 PM</option>
-                    <option value="03:00 PM" className="bg-[#0a0f1d] text-white">03:00 PM</option>
-                    <option value="04:00 PM" className="bg-[#0a0f1d] text-white">04:00 PM</option>
-                    <option value="05:00 PM" className="bg-[#0a0f1d] text-white">05:00 PM</option>
+                    <option value="09:00 AM" className="bg-[#0a0f1d] text-slate-900 dark:text-white">09:00 AM</option>
+                    <option value="10:00 AM" className="bg-[#0a0f1d] text-slate-900 dark:text-white">10:00 AM</option>
+                    <option value="11:00 AM" className="bg-[#0a0f1d] text-slate-900 dark:text-white">11:00 AM</option>
+                    <option value="12:00 PM" className="bg-[#0a0f1d] text-slate-900 dark:text-white">12:00 PM</option>
+                    <option value="02:00 PM" className="bg-[#0a0f1d] text-slate-900 dark:text-white">02:00 PM</option>
+                    <option value="03:00 PM" className="bg-[#0a0f1d] text-slate-900 dark:text-white">03:00 PM</option>
+                    <option value="04:00 PM" className="bg-[#0a0f1d] text-slate-900 dark:text-white">04:00 PM</option>
+                    <option value="05:00 PM" className="bg-[#0a0f1d] text-slate-900 dark:text-white">05:00 PM</option>
                   </select>
                 </div>
               </div>
@@ -559,11 +498,11 @@ export default function AdminAppointmentsPage() {
                   value={adminNotes}
                   onChange={(e) => setAdminNotes(e.target.value)}
                   rows={3}
-                  className="bg-white/[0.02] border-white/[0.1] text-white"
+                  className="bg-white dark:bg-white/[0.02] border-slate-300 dark:border-white/[0.1] text-slate-900 dark:text-white"
                 />
               </div>
 
-              <div className="pt-4 border-t border-white/[0.05] flex justify-between gap-3">
+              <div className="pt-4 border-t border-slate-200 dark:border-white/[0.05] flex justify-between gap-3">
                 <Button
                   type="button"
                   onClick={() => handleDeleteAppointment(selectedAppt._id)}
@@ -577,14 +516,14 @@ export default function AdminAppointmentsPage() {
                     type="button"
                     onClick={() => setIsModalOpen(false)}
                     variant="outline"
-                    className="border-white/[0.08] hover:bg-white/[0.02]"
+                    className="border-slate-300 dark:border-white/[0.08] hover:bg-white/[0.02]"
                   >
                     Close
                   </Button>
                   <Button
                     type="submit"
                     disabled={actionLoading}
-                    className="bg-sky-500 hover:bg-sky-400 text-white font-semibold"
+                    className="bg-sky-500 hover:bg-sky-400 text-slate-900 dark:text-white font-semibold"
                   >
                     {actionLoading ? "Saving..." : "Save Reschedule"}
                   </Button>

@@ -163,6 +163,31 @@
     @apply bg-border rounded-full hover:bg-muted-foreground/30 transition-colors;
   }
 
+  /* Hide scrollbar utility */
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Adjust native date input calendar icon color for light/dark modes */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    transition: filter 0.3s ease;
+  }
+  .dark input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
+
+  /* Force readable placeholder text color for inputs with white backgrounds in dark mode */
+  input.bg-white::placeholder,
+  textarea.bg-white::placeholder {
+    color: #64748b !important;
+    opacity: 0.85 !important;
+  }
+
   .bg-grid-pattern {
     background-size: 30px 30px;
     background-image: linear-gradient(to right, rgba(21, 128, 61, 0.03) 1px, transparent 1px),

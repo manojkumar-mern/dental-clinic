@@ -1,3 +1,4 @@
+const Doctor = require("../models/Doctor");
 const appointmentService = require("../services/appointmentService");
 const logActivity = require("../utils/logger");
 
@@ -185,6 +186,30 @@ const deleteAppointment = async (req, res, next) => {
   }
 };
 
+/**
+ * @desc    Get doctor available slots
+ * @route   GET /api/appointments/doctor/:doctorId/available
+ * @access  Public
+ */
+const getDoctorAvailableSlots = async (req, res, next) => {
+  try {
+    const { doctorId } = req.params;
+    const doctor = await Doctor.findById(doctorId).populate("user", "name");
+
+    if (!doctor) {
+      res.status(404);
+      return next(new Error("Doctor not found"));
+    }
+
+    res.status(200).json({
+      success: true,
+      data: doctor.availability || [],
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getAppointments,
   getAppointmentById,
@@ -192,4 +217,5 @@ module.exports = {
   updateAppointment,
   updateAppointmentStatus,
   deleteAppointment,
+  getDoctorAvailableSlots,
 };

@@ -148,65 +148,10 @@ export default function AboutPage() {
         </Container>
       </div>
 
-      {/* --- FLOATING SIDE SCROLL & SCROLL-UP PANEL --- */}
-      <div 
-        className={cn(
-          "fixed right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col items-center gap-4 transition-all duration-500",
-          showScrollUp ? "opacity-100 translate-x-0" : "opacity-45 translate-x-2 hover:opacity-100 hover:translate-x-0"
-        )}
-      >
-        {/* Scroll Progress Bar Track */}
-        <div className="relative w-1.5 h-36 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-          <div 
-            className="absolute top-0 left-0 w-full bg-primary rounded-full transition-all duration-100"
-            style={{ height: `${scrollProgress}%` }}
-          />
-        </div>
-
-        {/* Section Bullet Indicators */}
-        <div className="flex flex-col gap-3 py-2 px-1.5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-border/50 rounded-full shadow-lg">
-          <button 
-            onClick={() => scrollToSection(heroRef)}
-            title="About Us"
-            className={cn(
-              "size-2.5 rounded-full transition-all cursor-pointer",
-              activeSection === "hero" ? "bg-primary scale-125" : "bg-slate-300 dark:bg-slate-600 hover:bg-primary/50"
-            )}
-          />
-          <button 
-            onClick={() => scrollToSection(journeyRef)}
-            title="Our Journey"
-            className={cn(
-              "size-2.5 rounded-full transition-all cursor-pointer",
-              activeSection === "journey" ? "bg-primary scale-125" : "bg-slate-300 dark:bg-slate-600 hover:bg-primary/50"
-            )}
-          />
-          <button 
-            onClick={() => scrollToSection(detailsRef)}
-            title="Clinic Details"
-            className={cn(
-              "size-2.5 rounded-full transition-all cursor-pointer",
-              activeSection === "details" ? "bg-primary scale-125" : "bg-slate-300 dark:bg-slate-600 hover:bg-primary/50"
-            )}
-          />
-        </div>
-
-        {/* Dynamic Scroll Up Button */}
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className={cn(
-            "size-10 rounded-full bg-primary text-white shadow-lg hover:bg-primary-hover flex items-center justify-center transition-all duration-300 cursor-pointer",
-            showScrollUp ? "scale-100 translate-y-0 opacity-100" : "scale-0 translate-y-4 opacity-0 pointer-events-none"
-          )}
-          title="Scroll to Top"
-        >
-          <ChevronUp className="size-5 animate-pulse" />
-        </button>
-      </div>
-
       {/* --- HERO HEADER SECTION --- */}
       <section 
         ref={heroRef}
+        id="about-hero"
         className="w-full pt-20 pb-20 bg-gradient-to-br from-light-green/30 via-white to-background border-b border-border/30 bg-grid-pattern relative overflow-hidden"
       >
         <div className="absolute top-1/3 left-1/10 size-96 bg-primary/5 rounded-full filter blur-3xl pointer-events-none" />
@@ -274,6 +219,7 @@ export default function AboutPage() {
       {/* --- THE TIMELINE: OUR JOURNEY --- */}
       <section 
         ref={journeyRef}
+        id="about-journey"
         className="w-full py-24 bg-white relative overflow-hidden"
       >
         <Container>
@@ -368,6 +314,7 @@ export default function AboutPage() {
       {/* --- CLINIC DETAILS SECTION (Dark Green background style) --- */}
       <section 
         ref={detailsRef}
+        id="about-details"
         className="w-full py-24 bg-[#0F2D1D] text-white relative overflow-hidden"
       >
         <div className="absolute right-0 bottom-0 w-80 h-80 bg-primary/10 rounded-full filter blur-3xl pointer-events-none" />

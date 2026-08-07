@@ -155,80 +155,19 @@ export default function AdminMessagesPage() {
 
   if (!admin) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#070b15] text-slate-400">
+      <div className="min-h-screen flex items-center justify-center bg-[#070b15] text-slate-600 dark:text-slate-400">
         <p>Loading secure session...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-[#070b15]">
-      {/* Side Navigation Bar */}
-      <aside className="w-full md:w-64 bg-[#0a0f1d] border-b md:border-b-0 md:border-r border-white/[0.05] p-6 flex flex-col justify-between shrink-0">
-        <div>
-          <div className="flex items-center gap-3 mb-8">
-            <div className="size-8 rounded-lg bg-gradient-to-tr from-sky-400 to-blue-600 flex items-center justify-center text-white font-bold text-sm">
-              A
-            </div>
-            <span className="font-semibold text-white tracking-wider uppercase text-sm">Aura Dental</span>
-          </div>
-
-          <nav className="space-y-1">
-            <Link
-              href="/admin/dashboard"
-              className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.02] text-sm font-medium transition-all"
-            >
-              Dashboard
-            </Link>
-            <Link
-              href="/admin/appointments"
-              className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.02] text-sm font-medium transition-all"
-            >
-              Appointments
-            </Link>
-            <Link
-              href="/admin/patients"
-              className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.02] text-sm font-medium transition-all"
-            >
-              Patients
-            </Link>
-            <Link
-              href="/admin/services"
-              className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.02] text-sm font-medium transition-all"
-            >
-              Services
-            </Link>
-            <Link
-              href="/admin/messages"
-              className="flex items-center gap-3 px-4 py-2.5 rounded-lg bg-sky-500/10 text-sky-400 text-sm font-medium transition-all"
-            >
-              Messages
-            </Link>
-            <Link
-              href="/admin/settings"
-              className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.02] text-sm font-medium transition-all"
-            >
-              Settings
-            </Link>
-          </nav>
-        </div>
-
-        <div className="pt-6 border-t border-white/[0.05] mt-6">
-          <Button
-            onClick={handleLogout}
-            variant="outline"
-            className="w-full text-xs font-semibold uppercase tracking-wider text-slate-400 hover:text-white border-white/[0.08]"
-          >
-            Log Out
-          </Button>
-        </div>
-      </aside>
-
-      {/* Main Content Area */}
-      <main className="flex-1 p-8 md:p-12 overflow-y-auto">
-        <header className="pb-6 border-b border-white/[0.05] mb-8">
-          <h1 className="text-3xl font-bold tracking-tight text-white">Contact Messages</h1>
-          <p className="text-slate-400 mt-1">Review contact inquiries submitted by website visitors.</p>
+    <div className="w-full">
+      
+      <div className="w-full">
+        <header className="pb-6 border-b border-slate-200 dark:border-white/[0.05] mb-8">
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Contact Messages</h1>
+          <p className="text-slate-600 dark:text-slate-400 mt-1">Review contact inquiries submitted by website visitors.</p>
         </header>
 
         {/* Filters Panel */}
@@ -240,7 +179,7 @@ export default function AdminMessagesPage() {
               setSearch(e.target.value);
               setPage(1);
             }}
-            className="bg-white/[0.02] border-white/[0.08] text-white"
+            className="bg-white dark:bg-white/[0.02] border-slate-300 dark:border-white/[0.08] text-slate-900 dark:text-white"
           />
 
           <select
@@ -249,20 +188,20 @@ export default function AdminMessagesPage() {
               setStatusFilter(e.target.value);
               setPage(1);
             }}
-            className="rounded-lg border border-white/[0.08] bg-white/[0.02] px-4 text-sm transition-all focus-visible:border-sky-500 focus-visible:ring-2 focus-visible:ring-sky-500/15 outline-none text-white h-[46px]"
+            className="rounded-lg border border-slate-300 dark:border-white/[0.08] bg-white dark:bg-white/[0.02] px-4 text-sm transition-all focus-visible:border-sky-500 focus-visible:ring-2 focus-visible:ring-sky-500/15 outline-none text-slate-900 dark:text-white h-[46px]"
           >
-            <option value="" className="bg-[#070b15] text-white">All Statuses</option>
-            <option value="New" className="bg-[#070b15] text-white">New</option>
-            <option value="Read" className="bg-[#070b15] text-white">Read</option>
+            <option value="" className="bg-[#070b15] text-slate-900 dark:text-white">All Statuses</option>
+            <option value="New" className="bg-[#070b15] text-slate-900 dark:text-white">New</option>
+            <option value="Read" className="bg-[#070b15] text-slate-900 dark:text-white">Read</option>
           </select>
         </div>
 
         {/* Messages Table */}
-        <div className="bg-white/[0.02] border border-white/[0.05] rounded-xl overflow-hidden shadow-sm">
+        <div className="bg-white dark:bg-white/[0.02] border border-slate-200 dark:border-white/[0.05] rounded-xl overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-sm">
               <thead>
-                <tr className="border-b border-white/[0.05] bg-white/[0.01] text-slate-400 font-semibold">
+                <tr className="border-b border-slate-200 dark:border-white/[0.05] bg-white dark:bg-white/[0.01] text-slate-600 dark:text-slate-400 font-semibold">
                   <th className="p-4">Sender Name</th>
                   <th className="p-4">Email</th>
                   <th className="p-4">Phone</th>
@@ -272,38 +211,38 @@ export default function AdminMessagesPage() {
                   <th className="p-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/[0.05] text-slate-300">
+              <tbody className="divide-y divide-white/[0.05] text-slate-700 dark:text-slate-300">
                 {loading ? (
                   <tr>
-                    <td colSpan="7" className="p-8 text-center text-slate-500">
+                    <td colSpan="7" className="p-8 text-center text-slate-500 dark:text-slate-500">
                       Loading message logs...
                     </td>
                   </tr>
                 ) : messages.length === 0 ? (
                   <tr>
-                    <td colSpan="7" className="p-8 text-center text-slate-500">
+                    <td colSpan="7" className="p-8 text-center text-slate-500 dark:text-slate-500">
                       No messages matching criteria.
                     </td>
                   </tr>
                 ) : (
                   messages.map((msg) => (
                     <tr key={msg._id} className="hover:bg-white/[0.01] transition-all">
-                      <td className="p-4 font-semibold text-white">{msg.name}</td>
-                      <td className="p-4 text-slate-400">{msg.email}</td>
-                      <td className="p-4 text-slate-400">{msg.phone || "—"}</td>
-                      <td className="p-4 text-slate-300">{msg.subject}</td>
+                      <td className="p-4 font-semibold text-slate-900 dark:text-white">{msg.name}</td>
+                      <td className="p-4 text-slate-600 dark:text-slate-400">{msg.email}</td>
+                      <td className="p-4 text-slate-600 dark:text-slate-400">{msg.phone || "—"}</td>
+                      <td className="p-4 text-slate-700 dark:text-slate-300">{msg.subject}</td>
                       <td className="p-4">
                         <span
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
                             msg.status === "New"
                               ? "bg-amber-500/10 border-amber-500/20 text-amber-400"
-                              : "bg-slate-500/10 border-slate-500/20 text-slate-400"
+                              : "bg-slate-500/10 border-slate-500/20 text-slate-600 dark:text-slate-400"
                           }`}
                         >
                           {msg.status}
                         </span>
                       </td>
-                      <td className="p-4 text-slate-400">
+                      <td className="p-4 text-slate-600 dark:text-slate-400">
                         {new Date(msg.createdAt).toLocaleDateString()}
                       </td>
                       <td className="p-4 text-right">
@@ -311,7 +250,7 @@ export default function AdminMessagesPage() {
                           onClick={() => openDetailsModal(msg)}
                           variant="outline"
                           size="sm"
-                          className="text-xs border-white/[0.08] hover:bg-white/[0.02]"
+                          className="text-xs border-slate-300 dark:border-white/[0.08] hover:bg-white/[0.02]"
                         >
                           Read Details
                         </Button>
@@ -325,17 +264,17 @@ export default function AdminMessagesPage() {
 
           {/* Pagination Controls */}
           {totalPages > 1 && (
-            <div className="p-4 border-t border-white/[0.05] flex justify-between items-center bg-white/[0.01]">
+            <div className="p-4 border-t border-slate-200 dark:border-white/[0.05] flex justify-between items-center bg-white dark:bg-white/[0.01]">
               <Button
                 disabled={page <= 1}
                 onClick={() => setPage((p) => Math.max(p - 1, 1))}
                 variant="outline"
                 size="sm"
-                className="text-xs border-white/[0.08]"
+                className="text-xs border-slate-300 dark:border-white/[0.08]"
               >
                 Previous
               </Button>
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-slate-500 dark:text-slate-500">
                 Page {page} of {totalPages}
               </span>
               <Button
@@ -343,55 +282,55 @@ export default function AdminMessagesPage() {
                 onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
                 variant="outline"
                 size="sm"
-                className="text-xs border-white/[0.08]"
+                className="text-xs border-slate-300 dark:border-white/[0.08]"
               >
                 Next
               </Button>
             </div>
           )}
         </div>
-      </main>
+      </div>
 
       {/* Message Reader Modal */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title={selectedMsg ? `Contact Inquiry Details` : ""}
-        className="bg-[#0a0f1d] border-white/[0.08] text-white"
+        className="bg-[#0a0f1d] border-slate-300 dark:border-white/[0.08] text-slate-900 dark:text-white"
         size="md"
       >
         {selectedMsg && (
           <div className="space-y-6">
             {/* Sender Metadata */}
-            <div className="grid grid-cols-2 gap-4 text-sm text-slate-300 border-b border-white/[0.05] pb-4">
+            <div className="grid grid-cols-2 gap-4 text-sm text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-white/[0.05] pb-4">
               <div>
-                <span className="text-slate-500 font-medium block">Sender Name:</span>
-                <span className="text-white font-semibold">{selectedMsg.name}</span>
+                <span className="text-slate-500 dark:text-slate-500 font-medium block">Sender Name:</span>
+                <span className="text-slate-900 dark:text-white font-semibold">{selectedMsg.name}</span>
               </div>
               <div>
-                <span className="text-slate-500 font-medium block">Subject:</span>
-                <span className="text-white font-semibold">{selectedMsg.subject}</span>
+                <span className="text-slate-500 dark:text-slate-500 font-medium block">Subject:</span>
+                <span className="text-slate-900 dark:text-white font-semibold">{selectedMsg.subject}</span>
               </div>
               <div>
-                <span className="text-slate-500 font-medium block">Sender Email:</span>
-                <span className="text-white">{selectedMsg.email}</span>
+                <span className="text-slate-500 dark:text-slate-500 font-medium block">Sender Email:</span>
+                <span className="text-slate-900 dark:text-white">{selectedMsg.email}</span>
               </div>
               <div>
-                <span className="text-slate-500 font-medium block">Phone Number:</span>
-                <span className="text-white">{selectedMsg.phone || "—"}</span>
+                <span className="text-slate-500 dark:text-slate-500 font-medium block">Phone Number:</span>
+                <span className="text-slate-900 dark:text-white">{selectedMsg.phone || "—"}</span>
               </div>
             </div>
 
             {/* Message Body */}
             <div>
-              <span className="text-slate-500 text-sm font-medium block mb-2">Message Content:</span>
-              <div className="bg-white/[0.02] border border-white/[0.05] rounded-lg p-4 text-sm text-slate-200 whitespace-pre-wrap leading-relaxed">
+              <span className="text-slate-500 dark:text-slate-500 text-sm font-medium block mb-2">Message Content:</span>
+              <div className="bg-white dark:bg-white/[0.02] border border-slate-200 dark:border-white/[0.05] rounded-lg p-4 text-sm text-slate-200 whitespace-pre-wrap leading-relaxed">
                 {selectedMsg.message}
               </div>
             </div>
 
             {/* Actions */}
-            <div className="pt-4 border-t border-white/[0.05] flex justify-between items-center gap-3">
+            <div className="pt-4 border-t border-slate-200 dark:border-white/[0.05] flex justify-between items-center gap-3">
               <Button
                 disabled={actionLoading}
                 onClick={() => handleDeleteMessage(selectedMsg._id)}
@@ -406,7 +345,7 @@ export default function AdminMessagesPage() {
                   <Button
                     disabled={actionLoading}
                     onClick={() => handleMarkAsRead(selectedMsg._id)}
-                    className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold"
+                    className="bg-emerald-600 hover:bg-emerald-500 text-slate-900 dark:text-white text-xs font-semibold"
                   >
                     Mark as Read
                   </Button>
@@ -415,7 +354,7 @@ export default function AdminMessagesPage() {
                   type="button"
                   onClick={() => setIsModalOpen(false)}
                   variant="outline"
-                  className="border-white/[0.08] hover:bg-white/[0.02] text-xs"
+                  className="border-slate-300 dark:border-white/[0.08] hover:bg-white/[0.02] text-xs"
                 >
                   Close
                 </Button>

@@ -183,116 +183,48 @@ export default function AdminSettingsPage() {
 
   if (!admin || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#070b15] text-slate-400">
+      <div className="min-h-screen flex items-center justify-center bg-[#070b15] text-slate-600 dark:text-slate-400">
         <p>Loading clinic configuration dashboard...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-[#070b15]">
-      {/* Side Navigation Bar */}
-      <aside className="w-full md:w-64 bg-[#0a0f1d] border-b md:border-b-0 md:border-r border-white/[0.05] p-6 flex flex-col justify-between shrink-0">
-        <div>
-          <div className="flex items-center gap-3 mb-8">
-            <div className="size-8 rounded-lg bg-gradient-to-tr from-sky-400 to-blue-600 flex items-center justify-center text-white font-bold text-sm">
-              A
-            </div>
-            <span className="font-semibold text-white tracking-wider uppercase text-sm">Aura Dental</span>
-          </div>
-
-          <nav className="space-y-1">
-            <Link
-              href="/admin/dashboard"
-              className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.02] text-sm font-medium transition-all"
-            >
-              Dashboard
-            </Link>
-            <Link
-              href="/admin/appointments"
-              className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.02] text-sm font-medium transition-all"
-            >
-              Appointments
-            </Link>
-            <Link
-              href="/admin/patients"
-              className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.02] text-sm font-medium transition-all"
-            >
-              Patients
-            </Link>
-            <Link
-              href="/admin/services"
-              className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.02] text-sm font-medium transition-all"
-            >
-              Services
-            </Link>
-            <Link
-              href="/admin/messages"
-              className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.02] text-sm font-medium transition-all"
-            >
-              Messages
-            </Link>
-            <Link
-              href="/admin/settings"
-              className="flex items-center gap-3 px-4 py-2.5 rounded-lg bg-sky-500/10 text-sky-400 text-sm font-medium transition-all"
-            >
-              Settings
-            </Link>
-          </nav>
+    <div className="w-full animate-fadeIn">
+      {message && (
+        <div className="mb-6 p-4 rounded-lg bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium">
+          {message}
         </div>
+      )}
 
-        <div className="pt-6 border-t border-white/[0.05] mt-6">
-          <Button
-            onClick={handleLogout}
-            variant="outline"
-            className="w-full text-xs font-semibold uppercase tracking-wider text-slate-400 hover:text-white border-white/[0.08]"
+      {error && (
+        <div className="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium">
+          {error}
+        </div>
+      )}
+
+      {/* Tab Headers */}
+      <div className="flex border-b border-slate-200 dark:border-white/[0.05] gap-6 mb-8 overflow-x-auto pb-px">
+        {["general", "contact", "hours", "social", "seo"].map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`pb-4 text-sm font-semibold capitalize tracking-wide border-b-2 transition-all whitespace-nowrap outline-none ${
+              activeTab === tab
+                ? "border-sky-500 text-sky-400"
+                : "border-transparent text-slate-600 dark:text-slate-400 hover:text-white"
+            }`}
           >
-            Log Out
-          </Button>
-        </div>
-      </aside>
+            {tab === "hours" ? "Working Hours" : tab === "seo" ? "SEO & Website" : tab}
+          </button>
+        ))}
+      </div>
 
-      {/* Main Settings Console */}
-      <main className="flex-1 p-8 md:p-12 overflow-y-auto">
-        <header className="pb-6 border-b border-white/[0.05] mb-8">
-          <h1 className="text-3xl font-bold tracking-tight text-white">Clinic Settings</h1>
-          <p className="text-slate-400 mt-1">Configure clinic metadata, working hours, and SEO variables dynamically.</p>
-        </header>
-
-        {message && (
-          <div className="mb-6 p-4 rounded-lg bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium">
-            {message}
-          </div>
-        )}
-
-        {error && (
-          <div className="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium">
-            {error}
-          </div>
-        )}
-
-        {/* Tab Headers */}
-        <div className="flex border-b border-white/[0.05] gap-6 mb-8 overflow-x-auto pb-px">
-          {["general", "contact", "hours", "social", "seo"].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`pb-4 text-sm font-semibold capitalize tracking-wide border-b-2 transition-all whitespace-nowrap outline-none ${
-                activeTab === tab
-                  ? "border-sky-500 text-sky-400"
-                  : "border-transparent text-slate-400 hover:text-white"
-              }`}
-            >
-              {tab === "hours" ? "Working Hours" : tab === "seo" ? "SEO & Website" : tab}
-            </button>
-          ))}
-        </div>
-
-        {/* Configurations Form */}
-        <form onSubmit={handleSubmit} className="max-w-2xl bg-white/[0.02] border border-white/[0.05] rounded-xl p-6 sm:p-8 space-y-6 shadow-sm">
+      {/* Configurations Form */}
+      <form onSubmit={handleSubmit} className="w-full bg-white dark:bg-white/[0.02] border border-slate-200 dark:border-white/[0.05] rounded-xl p-6 sm:p-8 space-y-6 shadow-sm">
           {activeTab === "general" && (
             <div className="space-y-4 animate-fadeIn">
-              <h2 className="text-lg font-semibold text-white mb-2">General Clinic Info</h2>
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">General Clinic Info</h2>
               <div>
                 <Input
                   label="Clinic Name"
@@ -300,7 +232,7 @@ export default function AdminSettingsPage() {
                   value={clinicName}
                   onChange={(e) => setClinicName(e.target.value)}
                   required
-                  className="bg-white/[0.02] border-white/[0.1] text-white"
+                  className="bg-white dark:bg-white/[0.02] border-slate-300 dark:border-white/[0.1] text-slate-900 dark:text-white"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -310,7 +242,7 @@ export default function AdminSettingsPage() {
                     placeholder="e.g. /images/logo.png"
                     value={logo}
                     onChange={(e) => setLogo(e.target.value)}
-                    className="bg-white/[0.02] border-white/[0.1] text-white"
+                    className="bg-white dark:bg-white/[0.02] border-slate-300 dark:border-white/[0.1] text-slate-900 dark:text-white"
                   />
                 </div>
                 <div>
@@ -319,7 +251,7 @@ export default function AdminSettingsPage() {
                     placeholder="e.g. /favicon.ico"
                     value={favicon}
                     onChange={(e) => setFavicon(e.target.value)}
-                    className="bg-white/[0.02] border-white/[0.1] text-white"
+                    className="bg-white dark:bg-white/[0.02] border-slate-300 dark:border-white/[0.1] text-slate-900 dark:text-white"
                   />
                 </div>
               </div>
@@ -328,7 +260,7 @@ export default function AdminSettingsPage() {
 
           {activeTab === "contact" && (
             <div className="space-y-4 animate-fadeIn">
-              <h2 className="text-lg font-semibold text-white mb-2">Contact Details</h2>
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">Contact Details</h2>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Input
@@ -337,7 +269,7 @@ export default function AdminSettingsPage() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     required
-                    className="bg-white/[0.02] border-white/[0.1] text-white"
+                    className="bg-white dark:bg-white/[0.02] border-slate-300 dark:border-white/[0.1] text-slate-900 dark:text-white"
                   />
                 </div>
                 <div>
@@ -346,7 +278,7 @@ export default function AdminSettingsPage() {
                     placeholder="e.g. +1-555-019-2835"
                     value={whatsapp}
                     onChange={(e) => setWhatsapp(e.target.value)}
-                    className="bg-white/[0.02] border-white/[0.1] text-white"
+                    className="bg-white dark:bg-white/[0.02] border-slate-300 dark:border-white/[0.1] text-slate-900 dark:text-white"
                   />
                 </div>
               </div>
@@ -358,7 +290,7 @@ export default function AdminSettingsPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="bg-white/[0.02] border-white/[0.1] text-white"
+                  className="bg-white dark:bg-white/[0.02] border-slate-300 dark:border-white/[0.1] text-slate-900 dark:text-white"
                 />
               </div>
               <div>
@@ -368,7 +300,7 @@ export default function AdminSettingsPage() {
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   required
-                  className="bg-white/[0.02] border-white/[0.1] text-white"
+                  className="bg-white dark:bg-white/[0.02] border-slate-300 dark:border-white/[0.1] text-slate-900 dark:text-white"
                 />
               </div>
               <div>
@@ -377,7 +309,7 @@ export default function AdminSettingsPage() {
                   placeholder="e.g. https://maps.google.com/..."
                   value={googleMapsUrl}
                   onChange={(e) => setGoogleMapsUrl(e.target.value)}
-                  className="bg-white/[0.02] border-white/[0.1] text-white"
+                  className="bg-white dark:bg-white/[0.02] border-slate-300 dark:border-white/[0.1] text-slate-900 dark:text-white"
                 />
               </div>
             </div>
@@ -385,7 +317,7 @@ export default function AdminSettingsPage() {
 
           {activeTab === "hours" && (
             <div className="space-y-4 animate-fadeIn">
-              <h2 className="text-lg font-semibold text-white mb-2">Clinic Working Hours</h2>
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">Clinic Working Hours</h2>
               <div>
                 <Input
                   label="Monday – Friday Hours"
@@ -393,7 +325,7 @@ export default function AdminSettingsPage() {
                   value={monFri}
                   onChange={(e) => setMonFri(e.target.value)}
                   required
-                  className="bg-white/[0.02] border-white/[0.1] text-white"
+                  className="bg-white dark:bg-white/[0.02] border-slate-300 dark:border-white/[0.1] text-slate-900 dark:text-white"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -404,7 +336,7 @@ export default function AdminSettingsPage() {
                     value={saturday}
                     onChange={(e) => setSaturday(e.target.value)}
                     required
-                    className="bg-white/[0.02] border-white/[0.1] text-white"
+                    className="bg-white dark:bg-white/[0.02] border-slate-300 dark:border-white/[0.1] text-slate-900 dark:text-white"
                   />
                 </div>
                 <div>
@@ -414,7 +346,7 @@ export default function AdminSettingsPage() {
                     value={sunday}
                     onChange={(e) => setSunday(e.target.value)}
                     required
-                    className="bg-white/[0.02] border-white/[0.1] text-white"
+                    className="bg-white dark:bg-white/[0.02] border-slate-300 dark:border-white/[0.1] text-slate-900 dark:text-white"
                   />
                 </div>
               </div>
@@ -423,7 +355,7 @@ export default function AdminSettingsPage() {
 
           {activeTab === "social" && (
             <div className="space-y-4 animate-fadeIn">
-              <h2 className="text-lg font-semibold text-white mb-2">Social Channels Linkage</h2>
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">Social Channels Linkage</h2>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Input
@@ -431,7 +363,7 @@ export default function AdminSettingsPage() {
                     placeholder="e.g. https://facebook.com/..."
                     value={facebook}
                     onChange={(e) => setFacebook(e.target.value)}
-                    className="bg-white/[0.02] border-white/[0.1] text-white"
+                    className="bg-white dark:bg-white/[0.02] border-slate-300 dark:border-white/[0.1] text-slate-900 dark:text-white"
                   />
                 </div>
                 <div>
@@ -440,7 +372,7 @@ export default function AdminSettingsPage() {
                     placeholder="e.g. https://instagram.com/..."
                     value={instagram}
                     onChange={(e) => setInstagram(e.target.value)}
-                    className="bg-white/[0.02] border-white/[0.1] text-white"
+                    className="bg-white dark:bg-white/[0.02] border-slate-300 dark:border-white/[0.1] text-slate-900 dark:text-white"
                   />
                 </div>
               </div>
@@ -451,7 +383,7 @@ export default function AdminSettingsPage() {
                     placeholder="e.g. https://linkedin.com/..."
                     value={linkedin}
                     onChange={(e) => setLinkedin(e.target.value)}
-                    className="bg-white/[0.02] border-white/[0.1] text-white"
+                    className="bg-white dark:bg-white/[0.02] border-slate-300 dark:border-white/[0.1] text-slate-900 dark:text-white"
                   />
                 </div>
                 <div>
@@ -460,7 +392,7 @@ export default function AdminSettingsPage() {
                     placeholder="e.g. https://youtube.com/..."
                     value={youtube}
                     onChange={(e) => setYoutube(e.target.value)}
-                    className="bg-white/[0.02] border-white/[0.1] text-white"
+                    className="bg-white dark:bg-white/[0.02] border-slate-300 dark:border-white/[0.1] text-slate-900 dark:text-white"
                   />
                 </div>
               </div>
@@ -469,7 +401,7 @@ export default function AdminSettingsPage() {
 
           {activeTab === "seo" && (
             <div className="space-y-4 animate-fadeIn">
-              <h2 className="text-lg font-semibold text-white mb-2">Website & SEO Metadata</h2>
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">Website & SEO Metadata</h2>
               <div>
                 <Input
                   label="Footer Copyright Text"
@@ -477,7 +409,7 @@ export default function AdminSettingsPage() {
                   value={footerCopyright}
                   onChange={(e) => setFooterCopyright(e.target.value)}
                   required
-                  className="bg-white/[0.02] border-white/[0.1] text-white"
+                  className="bg-white dark:bg-white/[0.02] border-slate-300 dark:border-white/[0.1] text-slate-900 dark:text-white"
                 />
               </div>
               <div>
@@ -487,7 +419,7 @@ export default function AdminSettingsPage() {
                   value={seoTitle}
                   onChange={(e) => setSeoTitle(e.target.value)}
                   required
-                  className="bg-white/[0.02] border-white/[0.1] text-white"
+                  className="bg-white dark:bg-white/[0.02] border-slate-300 dark:border-white/[0.1] text-slate-900 dark:text-white"
                 />
               </div>
               <div>
@@ -498,23 +430,22 @@ export default function AdminSettingsPage() {
                   onChange={(e) => setSeoDescription(e.target.value)}
                   required
                   rows={3}
-                  className="bg-white/[0.02] border-white/[0.1] text-white"
+                  className="bg-white dark:bg-white/[0.02] border-slate-300 dark:border-white/[0.1] text-slate-900 dark:text-white"
                 />
               </div>
             </div>
           )}
 
-          <div className="pt-4 border-t border-white/[0.05] flex justify-end">
+          <div className="pt-4 border-t border-slate-200 dark:border-white/[0.05] flex justify-end">
             <Button
               type="submit"
               disabled={saving}
-              className="bg-sky-500 hover:bg-sky-400 text-white font-semibold px-6 py-2.5 rounded-lg shadow-md shadow-sky-500/10"
+              className="bg-sky-500 hover:bg-sky-400 text-slate-900 dark:text-white font-semibold px-6 py-2.5 rounded-lg shadow-md shadow-sky-500/10"
             >
               {saving ? "Saving settings..." : "Save Configuration"}
             </Button>
           </div>
         </form>
-      </main>
-    </div>
-  );
-}
+      </div>
+    );
+  }
