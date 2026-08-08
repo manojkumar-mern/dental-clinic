@@ -14,12 +14,11 @@ import { Container } from "./Container";
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-  if (pathname.startsWith("/admin")) {
-    return null;
-  }
   const [settings, setSettings] = useState(null);
 
   useEffect(() => {
+    if (pathname.startsWith("/admin")) return;
+
     const fetchSettings = async () => {
       try {
         const res = await fetch(`${API_BASE_URL}/content/settings`);
@@ -32,7 +31,11 @@ export function Header() {
       }
     };
     fetchSettings();
-  }, []);
+  }, [pathname]);
+
+  if (pathname.startsWith("/admin")) {
+    return null;
+  }
 
   const clinicName = settings?.clinicName || "Aura Dental";
 

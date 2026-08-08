@@ -65,10 +65,12 @@ export default function AdminWrapper({ children }) {
         if (res.ok && data.success) {
           setAdmin(data.admin);
         } else {
+          document.cookie = "adminToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
           router.push("/admin/login");
         }
       } catch (err) {
         console.error("Session error:", err);
+        document.cookie = "adminToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
         router.push("/admin/login");
       }
     };

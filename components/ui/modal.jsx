@@ -69,7 +69,7 @@ export function Modal({
             exit={{ opacity: 0, scale: 0.95, y: 15 }}
             transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
             className={cn(
-              "relative w-full overflow-hidden rounded-2xl bg-card text-card-foreground p-6 sm:p-8 shadow-premium border border-border flex flex-col gap-4 z-10",
+              "relative w-full max-h-[90vh] overflow-hidden rounded-2xl bg-card text-card-foreground p-6 sm:p-8 shadow-premium border border-border flex flex-col gap-4 z-10",
               sizeClasses[size],
               className
             )}
@@ -85,7 +85,7 @@ export function Modal({
 
             {/* Header */}
             {(title || description) && (
-              <div className="flex flex-col gap-1 pr-6">
+              <div className="flex flex-col gap-1 pr-6 shrink-0">
                 {title && (
                   <h2 id="modal-title" className="text-xl font-heading font-semibold text-foreground">
                     {title}
@@ -100,7 +100,7 @@ export function Modal({
             )}
 
             {/* Content Body */}
-            <div className="w-full relative flex-1">{children}</div>
+            <div className="w-full relative flex-1 overflow-y-auto pr-1 select-none">{children}</div>
           </motion.div>
         </div>
       )}

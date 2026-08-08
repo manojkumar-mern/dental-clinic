@@ -812,7 +812,7 @@ export default function Home() {
                     required
                     value={bookName}
                     onChange={(e) => setBookName(e.target.value)}
-                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
+                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 text-slate-800"
                   />
                   <input
                     type="tel"
@@ -820,14 +820,14 @@ export default function Home() {
                     required
                     value={bookPhone}
                     onChange={(e) => setBookPhone(e.target.value)}
-                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
+                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 text-slate-800"
                   />
                   <input
                     type="email"
                     placeholder="Email Address (Optional)"
                     value={bookEmail}
                     onChange={(e) => setBookEmail(e.target.value)}
-                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
+                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 text-slate-800"
                   />
                   <select
                     required
@@ -856,7 +856,7 @@ export default function Home() {
                     required
                     value={bookDate}
                     onChange={(e) => setBookDate(e.target.value)}
-                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
+                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 text-slate-800"
                   />
                   <select
                     required
@@ -879,7 +879,7 @@ export default function Home() {
                     placeholder="Reason for Visit (Optional)"
                     value={bookReason}
                     onChange={(e) => setBookReason(e.target.value)}
-                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 sm:col-span-2"
+                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 sm:col-span-2 text-slate-800"
                   />
                   <button
                     type="submit"
@@ -912,14 +912,14 @@ export default function Home() {
                     required
                     value={contactName}
                     onChange={(e) => setContactName(e.target.value)}
-                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
+                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 text-slate-800"
                   />
                   <input
                     type="tel"
                     placeholder="Phone Number (Optional)"
                     value={contactPhone}
                     onChange={(e) => setContactPhone(e.target.value)}
-                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
+                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 text-slate-800"
                   />
                   <input
                     type="email"
@@ -927,14 +927,14 @@ export default function Home() {
                     required
                     value={contactEmail}
                     onChange={(e) => setContactEmail(e.target.value)}
-                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 sm:col-span-2"
+                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 sm:col-span-2 text-slate-800"
                   />
                   <input
                     type="text"
                     placeholder="Subject (Optional)"
                     value={contactSubject}
                     onChange={(e) => setContactSubject(e.target.value)}
-                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 sm:col-span-2"
+                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 sm:col-span-2 text-slate-800"
                   />
                   <textarea
                     placeholder="Your Message..."
@@ -942,7 +942,7 @@ export default function Home() {
                     value={contactMessage}
                     onChange={(e) => setContactMessage(e.target.value)}
                     rows={4}
-                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 sm:col-span-2 resize-none"
+                    className="bg-white border border-border px-4 py-2.5 rounded-lg text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 sm:col-span-2 resize-none text-slate-800"
                   />
                   <button
                     type="submit"
