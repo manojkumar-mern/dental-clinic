@@ -66,7 +66,7 @@ export default function AdminSettingsPage() {
         }
 
         // Verify Admin
-        const sessionResponse = await fetch("http://localhost:5000/api/admin/me", {
+        const sessionResponse = await fetch(`${API_BASE_URL}/admin/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const sessionData = await sessionResponse.json();
@@ -79,7 +79,7 @@ export default function AdminSettingsPage() {
         }
 
         // Fetch settings
-        const settingsResponse = await fetch("http://localhost:5000/api/content/settings");
+        const settingsResponse = await fetch(`${API_BASE_URL}/content/settings`);
         const settingsData = await settingsResponse.json();
 
         if (settingsResponse.ok && settingsData.success && settingsData.data) {
@@ -136,7 +136,7 @@ export default function AdminSettingsPage() {
 
     const token = getCookieToken();
     try {
-      const response = await fetch("http://localhost:5000/api/content/settings", {
+      const response = await fetch(`${API_BASE_URL}/content/settings`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

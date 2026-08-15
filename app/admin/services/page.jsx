@@ -51,7 +51,7 @@ export default function AdminServicesPage() {
           return;
         }
 
-        const response = await fetch("http://localhost:5000/api/admin/me", {
+        const response = await fetch(`${API_BASE_URL}/admin/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -74,7 +74,7 @@ export default function AdminServicesPage() {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:5000/api/services?search=${search}&page=${page}&limit=5`
+        `${API_BASE_URL}/services?search=${search}&page=${page}&limit=5`
       );
       const data = await response.json();
       if (response.ok && data.success) {
@@ -136,8 +136,8 @@ export default function AdminServicesPage() {
     const token = getCookieToken();
     const url =
       modalType === "create"
-        ? "http://localhost:5000/api/services"
-        : `http://localhost:5000/api/services/${selectedService._id}`;
+        ? `${API_BASE_URL}/services`
+        : `${API_BASE_URL}/services/${selectedService._id}`;
 
     const method = modalType === "create" ? "POST" : "PUT";
 
@@ -177,7 +177,7 @@ export default function AdminServicesPage() {
   const handleToggleStatus = async (id) => {
     const token = getCookieToken();
     try {
-      const response = await fetch(`http://localhost:5000/api/services/${id}/toggle`, {
+      const response = await fetch(`${API_BASE_URL}/services/${id}/toggle`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -198,7 +198,7 @@ export default function AdminServicesPage() {
 
     const token = getCookieToken();
     try {
-      const response = await fetch(`http://localhost:5000/api/services/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/services/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

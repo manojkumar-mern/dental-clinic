@@ -62,8 +62,9 @@ const uploadToCloudinary = (fileBuffer, folder = "dental-clinic") => {
 
       fs.writeFile(filepath, fileBuffer, (err) => {
         if (err) return reject(err);
+        const baseUrl = process.env.BACKEND_URL || "http://localhost:5000";
         resolve({
-          url: `http://localhost:5000/uploads/${filename}`,
+          url: `${baseUrl}/uploads/${filename}`,
           publicId: `local-${filename}`,
         });
       });

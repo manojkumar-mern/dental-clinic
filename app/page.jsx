@@ -45,6 +45,7 @@ import { Section } from "@/components/layout/Section";
 import { Card, CardContent } from "@/components/cards";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { API_BASE_URL } from "@/lib/api";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -93,7 +94,7 @@ export default function Home() {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/content/settings");
+        const res = await fetch(`${API_BASE_URL}/content/settings`);
         const data = await res.json();
         if (res.ok && data.success) {
           setSettings(data.data);
@@ -242,7 +243,7 @@ export default function Home() {
   useEffect(() => {
     const fetchActiveServices = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/services?status=Active");
+        const response = await fetch(`${API_BASE_URL}/services?status=Active`);
         const data = await response.json();
         if (response.ok && data.success && data.services && data.services.length > 0) {
           const mapped = data.services.map((service) => ({
@@ -442,7 +443,7 @@ export default function Home() {
     setBookingError("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/appointments", {
+      const response = await fetch(`${API_BASE_URL}/appointments`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -477,7 +478,7 @@ export default function Home() {
     setContactError("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/contact-messages", {
+      const response = await fetch(`${API_BASE_URL}/contact-messages`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -22,6 +22,7 @@ import { Card } from "@/components/cards";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { API_BASE_URL } from "@/lib/api";
 
 export default function PatientCareDetailPage() {
   const params = useParams();
@@ -74,7 +75,7 @@ export default function PatientCareDetailPage() {
     // 1. Fetch Settings for phone fallback
     const fetchSettings = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/content/settings");
+        const res = await fetch(`${API_BASE_URL}/content/settings`);
         const data = await res.json();
         if (res.ok && data.success) {
           setSettings(data.data);
@@ -89,7 +90,7 @@ export default function PatientCareDetailPage() {
     if (slug === "faqs") {
       const fetchFaqs = async () => {
         try {
-          const res = await fetch("http://localhost:5000/api/content/faqs");
+          const res = await fetch(`${API_BASE_URL}/content/faqs`);
           const data = await res.json();
           if (res.ok && data.success && data.data.length > 0) {
             setFaqsList(data.data.map(f => ({ q: f.question, a: f.answer })));
@@ -105,7 +106,7 @@ export default function PatientCareDetailPage() {
     if (slug === "testimonials") {
       const fetchTestimonials = async () => {
         try {
-          const res = await fetch("http://localhost:5000/api/content/testimonials");
+          const res = await fetch(`${API_BASE_URL}/content/testimonials`);
           const data = await res.json();
           if (res.ok && data.success && data.data.length > 0) {
             setTestimonialsList(data.data.map(t => ({
@@ -127,7 +128,7 @@ export default function PatientCareDetailPage() {
     if (slug === "gallery") {
       const fetchGallery = async () => {
         try {
-          const res = await fetch("http://localhost:5000/api/content/gallery");
+          const res = await fetch(`${API_BASE_URL}/content/gallery`);
           const data = await res.json();
           if (res.ok && data.success) {
             setGalleryList(data.data);

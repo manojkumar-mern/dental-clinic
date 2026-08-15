@@ -42,7 +42,7 @@ export default function AdminMessagesPage() {
           return;
         }
 
-        const response = await fetch("http://localhost:5000/api/admin/me", {
+        const response = await fetch(`${API_BASE_URL}/admin/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -66,7 +66,7 @@ export default function AdminMessagesPage() {
     try {
       const token = getCookieToken();
       const response = await fetch(
-        `http://localhost:5000/api/contact-messages?search=${search}&status=${statusFilter}&page=${page}&limit=5`,
+        `${API_BASE_URL}/contact-messages?search=${search}&status=${statusFilter}&page=${page}&limit=5`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -109,7 +109,7 @@ export default function AdminMessagesPage() {
     setActionLoading(true);
     const token = getCookieToken();
     try {
-      const response = await fetch(`http://localhost:5000/api/contact-messages/${id}/read`, {
+      const response = await fetch(`${API_BASE_URL}/contact-messages/${id}/read`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -135,7 +135,7 @@ export default function AdminMessagesPage() {
     setActionLoading(true);
     const token = getCookieToken();
     try {
-      const response = await fetch(`http://localhost:5000/api/contact-messages/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/contact-messages/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

@@ -53,7 +53,7 @@ export default function AdminPatientsPage() {
           return;
         }
 
-        const response = await fetch("http://localhost:5000/api/admin/me", {
+        const response = await fetch(`${API_BASE_URL}/admin/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -76,7 +76,7 @@ export default function AdminPatientsPage() {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:5000/api/patients?search=${search}&page=${page}&limit=5`,
+        `${API_BASE_URL}/patients?search=${search}&page=${page}&limit=5`,
         {
           headers: {
             Authorization: `Bearer ${getCookieToken()}`,
@@ -149,8 +149,8 @@ export default function AdminPatientsPage() {
     const token = getCookieToken();
     const url =
       modalType === "create"
-        ? "http://localhost:5000/api/patients"
-        : `http://localhost:5000/api/patients/${selectedPatient._id}`;
+        ? `${API_BASE_URL}/patients`
+        : `${API_BASE_URL}/patients/${selectedPatient._id}`;
 
     const method = modalType === "create" ? "POST" : "PUT";
 
@@ -194,7 +194,7 @@ export default function AdminPatientsPage() {
 
     const token = getCookieToken();
     try {
-      const response = await fetch(`http://localhost:5000/api/patients/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/patients/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

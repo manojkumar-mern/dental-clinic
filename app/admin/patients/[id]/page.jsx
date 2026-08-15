@@ -40,7 +40,7 @@ export default function AdminPatientDetailPage({ params }) {
           return;
         }
 
-        const response = await fetch("http://localhost:5000/api/admin/me", {
+        const response = await fetch(`${API_BASE_URL}/admin/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -63,7 +63,7 @@ export default function AdminPatientDetailPage({ params }) {
     setLoading(true);
     try {
       const token = getCookieToken();
-      const response = await fetch(`http://localhost:5000/api/patients/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/patients/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -99,7 +99,7 @@ export default function AdminPatientDetailPage({ params }) {
 
     const token = getCookieToken();
     try {
-      const response = await fetch(`http://localhost:5000/api/patients/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/patients/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

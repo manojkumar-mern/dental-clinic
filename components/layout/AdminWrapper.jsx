@@ -8,6 +8,7 @@ import {
   Users, Calendar, Activity, Settings, Layers, MessageSquare, Sun, Moon, Menu, X, LogOut,
   PanelLeftClose, PanelLeftOpen, Globe
 } from "lucide-react";
+import { API_BASE_URL } from "@/lib/api";
 
 export default function AdminWrapper({ children }) {
   const [admin, setAdmin] = useState(null);
@@ -58,7 +59,7 @@ export default function AdminWrapper({ children }) {
 
     const fetchSession = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/admin/me", {
+        const res = await fetch(`${API_BASE_URL}/admin/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();

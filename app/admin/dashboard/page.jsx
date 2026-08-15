@@ -47,7 +47,7 @@ export default function AdminDashboardPage() {
         }
 
         // Fetch Session
-        const sessionRes = await fetch("http://localhost:5000/api/admin/me", {
+        const sessionRes = await fetch(`${API_BASE_URL}/admin/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const sessionData = await sessionRes.json();
@@ -56,7 +56,7 @@ export default function AdminDashboardPage() {
           setAdmin(sessionData.admin);
 
           // Fetch Stats
-          const statsRes = await fetch("http://localhost:5000/api/stats/dashboard", {
+          const statsRes = await fetch(`${API_BASE_URL}/stats/dashboard`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           const statsData = await statsRes.json();

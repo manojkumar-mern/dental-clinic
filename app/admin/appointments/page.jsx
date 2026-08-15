@@ -51,7 +51,7 @@ export default function AdminAppointmentsPage() {
           return;
         }
 
-        const response = await fetch("http://localhost:5000/api/admin/me", {
+        const response = await fetch(`${API_BASE_URL}/admin/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -75,7 +75,7 @@ export default function AdminAppointmentsPage() {
     try {
       const token = getCookieToken();
       const response = await fetch(
-        `http://localhost:5000/api/appointments?search=${search}&status=${statusFilter}&date=${dateFilter}&page=${page}&limit=5`,
+        `${API_BASE_URL}/appointments?search=${search}&status=${statusFilter}&date=${dateFilter}&page=${page}&limit=5`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -127,7 +127,7 @@ export default function AdminAppointmentsPage() {
     const token = getCookieToken();
     try {
       const response = await fetch(
-        `http://localhost:5000/api/appointments/${selectedAppt._id}/status`,
+        `${API_BASE_URL}/appointments/${selectedAppt._id}/status`,
         {
           method: "PATCH",
           headers: {
@@ -163,7 +163,7 @@ export default function AdminAppointmentsPage() {
     const token = getCookieToken();
     try {
       const response = await fetch(
-        `http://localhost:5000/api/appointments/${selectedAppt._id}`,
+        `${API_BASE_URL}/appointments/${selectedAppt._id}`,
         {
           method: "PUT",
           headers: {
@@ -199,7 +199,7 @@ export default function AdminAppointmentsPage() {
 
     const token = getCookieToken();
     try {
-      const response = await fetch(`http://localhost:5000/api/appointments/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/appointments/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
