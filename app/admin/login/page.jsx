@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Input from "@/components/ui/input";
 import Button from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
+import { API_BASE_URL } from "@/lib/api";
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");

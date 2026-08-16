@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from "@/lib/api";
 
 import React, { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
