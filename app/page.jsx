@@ -77,6 +77,7 @@ export default function Home() {
   const [servicesLoading, setServicesLoading] = useState(true);
 
   const [settings, setSettings] = useState(null);
+  const [isDesktopClient, setIsDesktopClient] = useState(false);
 
   // Form toggling tab
   const [formTab, setFormTab] = useState("appointment"); // "appointment" or "contact"
@@ -110,7 +111,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    // Setting up anything else if needed
+    setIsDesktopClient(window.matchMedia("(min-width: 1024px)").matches);
   }, []);
 
   // Handle smooth scroll for anchor links and initial hash load
@@ -505,6 +506,9 @@ export default function Home() {
     }
   };
 
+  const ServiceContainer = isDesktopClient ? StaggerContainer : "div";
+  const ServiceItem = isDesktopClient ? StaggerItem : "div";
+
   return (
     <div className="w-full bg-background text-[#1E293B] bg-dot-pattern">
       {/* 1. HERO SECTION */}
@@ -691,13 +695,13 @@ export default function Home() {
           {/* Scrolling horizontal container */}
           <div className="w-full lg:overflow-hidden overflow-x-auto pb-10 scrollbar-hide snap-x snap-mandatory">
             <div ref={servicesScrollRef} className="w-max">
-              <StaggerContainer className="flex flex-row gap-6 px-4 md:px-8 lg:px-[10vw] w-max">
+              <ServiceContainer className="flex flex-row gap-6 px-4 md:px-8 lg:px-[10vw] w-max">
               {displayedServices.map((service, idx) => {
                 const IconComponent = typeof service.icon === "string"
                   ? (LucideIcons[service.icon] || LucideIcons.Stethoscope)
                   : service.icon;
                 return (
-                  <StaggerItem 
+                  <ServiceItem 
                     key={idx}
                     className="shrink-0 snap-center w-[300px] lg:w-[400px] bg-white border border-slate-100 rounded-2xl p-5 flex flex-col justify-between group hover:shadow-md transition-all duration-300 relative hover:-translate-y-[2px]"
                   >
@@ -736,10 +740,10 @@ export default function Home() {
                         0{idx + 1}
                       </span>
                     </div>
-                  </StaggerItem>
+                  </ServiceItem>
                 );
               })}
-            </StaggerContainer>
+              </ServiceContainer>
             </div>
           </div>
 
@@ -853,7 +857,10 @@ export default function Home() {
                     )}
                   </select>
                   <input
-                    type="date"
+                    type={bookDate ? "date" : "text"}
+                    placeholder="Select Date"
+                    onFocus={(e) => { e.target.type = "date"; }}
+                    onBlur={(e) => { if (!bookDate) e.target.type = "text"; }}
                     required
                     value={bookDate}
                     onChange={(e) => setBookDate(e.target.value)}
